@@ -1,95 +1,3 @@
-import { useEffect, useRef, useState } from "react";
-import { Icon } from "./Icons.jsx";
-
-const MEDS = [
-  { name: "Paracetamol 650", form: "Tablet", cat: "Fever", price: 28 },
-  { name: "Azithromycin 500", form: "Tablet", cat: "Antibiotic", price: 96 },
-  { name: "Cetirizine 10mg", form: "Tablet", cat: "Allergy", price: 18 },
-  { name: "ORS Sachet", form: "Sachet", cat: "Hydration", price: 12 },
-  { name: "Vitamin D3", form: "Capsule", cat: "Supplement", price: 65 },
-];
-
-const PHARMACIES = [
-  { name: "Apollo Pharmacy", dist: "0.4 km", rating: 4.6 },
-  { name: "MedPlus", dist: "0.7 km", rating: 4.4 },
-  { name: "Wellness Forever", dist: "1.1 km", rating: 4.5 },
-];
-
-const RADII = [1, 2, 3, 5, 10];
-
-function Logo() {
-  return <img className="pa-logo" src="/logo.png" alt="" width={30} height={30} />;
-}
-
-export function PhoneApp({ route = "home", onNavigate, interactive = true, className = "" }) {
-  const [query, setQuery] = useState("");
-  const [chips, setChips] = useState([]);
-  const [radius, setRadius] = useState(1);
-  const [cart, setCart] = useState([]);
-  const [added, setAdded] = useState({});
-  const [reminders, setReminders] = useState([
-    { name: "Paracetamol 650", time: "8:00 AM", done: true },
-    { name: "Vitamin D3", time: "9:00 PM", done: false },
-  ]);
-  const [delivered, setDelivered] = useState(false);
-  const [messages, setMessages] = useState([
-    { who: "ai", text: "Hi! Ask me anything about your medicines — dosage, interactions or side effects." },
-  ]);
-  const [chat, setChat] = useState("");
-  const chatEndRef = useRef(null);
-
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [messages]);
-
-  function go(r) {
-    onNavigate?.(r);
-  }
-
-  const suggestions =
-    query.trim().length > 0
-      ? MEDS.filter((m) => m.name.toLowerCase().includes(query.trim().toLowerCase())).slice(0, 4)
-      : [];
-
-  function addChip(m) {
-    setChips((c) => (c.some((x) => x.name === m.name) ? c : [...c, m]));
-    setQuery("");
-  }
-
-  function removeChip(name) {
-    setChips((c) => c.filter((x) => x.name !== name));
-  }
-
-  function search() {
-    go("results");
-  }
-
-  function addToCart(ph, med) {
-    const key = ph.name + med.name;
-    setCart((c) => [...c, { pharmacy: ph.name, med: med.name, price: med.price }]);
-    setAdded((a) => ({ ...a, [key]: true }));
-  }
-
-  function toggleReminder(i) {
-    setReminders((r) => r.map((x, idx) => (idx === i ? { ...x, done: !x.done } : x)));
-  }
-
-  function addReminder() {
-    setReminders((r) => [...r, { name: "New reminder", time: "—", done: false }]);
-  }
-
-  function sendChat() {
-    const text = chat.trim();
-    if (!text) return;
-    setMessages((m) => [...m, { who: "me", text }]);
-    setChat("");
-    setTimeout(() => {
-      setMessages((m) => [
-        ...m,
-        { who: "ai", text: "That's a great question — always check with your pharmacist before combining medicines." },
-      ]);
-    }, 700);
-  }
 
   const cartCount = cart.length;
   const searched = chips.length ? chips : [MEDS[1]];
@@ -271,7 +179,7 @@ export function PhoneApp({ route = "home", onNavigate, interactive = true, class
       <div className="pa-ai">
         <div className="pa-head pa-head--ai">
           <span className="pa-ai__logo"><Icon name="spark" size={16} /></span>
-          <span><b>WIMM.ai</b><small>Safe answers about your medicines</small></span>
+          <span><b>AI Assistant</b><small>Safe answers about your medicines</small></span>
         </div>
         <div className="pa-chat">
           {messages.map((m, i) => (
@@ -340,29 +248,3 @@ export function PhoneApp({ route = "home", onNavigate, interactive = true, class
   return (
     <div className={`phone phone--app ${interactive ? "" : "phone--static"} ${className}`}>
       <div className="phone__notch" />
-      <div className="phone__glass">
-        <div className="pa">
-          <div className="pa-status">
-            <span>9:41</span>
-            <span className="pa-status__r">
-              <i /><i /><i />
-              <b />
-            </span>
-          </div>
-          <Screen />
-          <div className="pa-nav">
-            {TABS.map(([id, icon]) => (
-              <button
-                key={id}
-                className={`pa-nav__b ${route === id ? "is-active" : ""}`}
-                onClick={() => go(id)}
-              >
-                <Icon name={icon} size={20} />
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
