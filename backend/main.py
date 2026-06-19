@@ -12,8 +12,7 @@ Run dev:  uvicorn main:app --reload --port 8000
 APK hosting:
   Set WIMM_APK_URL to the GitHub Release asset URL:
   https://github.com/customer-wimm/Where-Is-My-Medicine/releases/download/v1.0/WhereIsMyMedicine.apk
-  The download endpoint streams it through our server so users always get
-  a proper "Save file" prompt and the download counter increments.
+  The browser is redirected there directly so GitHub handles auth and delivery.
 """
 
 from __future__ import annotations
@@ -23,10 +22,9 @@ import os
 from datetime import datetime, timezone
 from pathlib import Path
 
-import httpx
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr, Field
 
@@ -114,29 +112,16 @@ def stats():
 @app.get("/api/download")
 async def download():
     """
-    Stream the APK from GitHub Releases through our server so:
-      - Content-Disposition: attachment is preserved (triggers Save dialog)
-      - The download counter increments on every real download
-      - Users never see a raw GitHub URL
+    Increment the counter then redirect the browser straight to the GitHub
+    Release asset. Server-side streaming fails on private repos (GitHub
+    returns 404 to unauthenticated server requests). A browser redirect
+    lets GitHub handle auth and delivery natively.
     """
     if not APK_URL:
         raise HTTPException(status_code=404, detail="APK not available.")
 
     _bump_downloads()
-    filename = f"where-is-my-medicine-v{APK_VERSION}.apk"
-
-    async def _stream():
-        async with httpx.AsyncClient(follow_redirects=True, timeout=300) as client:
-            async with client.stream("GET", APK_URL) as resp:
-                resp.raise_for_status()
-                async for chunk in resp.aiter_bytes(chunk_size=65536):
-                    yield chunk
-
-    return StreamingResponse(
-        _stream(),
-        media_type="application/vnd.android.package-archive",
-        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
-    )
+    return RedirectResponse(url=APK_URL, status_code=302)
 
 
 @app.post("/api/contact")
