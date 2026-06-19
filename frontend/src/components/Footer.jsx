@@ -13,9 +13,33 @@ export function Footer() {
           <a href="#download">Download</a>
         </nav>
       </div>
+
+      {/* ── Trusted by ── */}
+      <div className="footer__trust">
+        <span className="footer__trust-label">Recognised by</span>
+        <div className="footer__trust-badges">
+          <img
+            src="/dpiit.png"
+            alt="DPIIT Start-Up India"
+            className="footer__dpiit"
+            width={140}
+            height={56}
+          />
+        </div>
+      </div>
+
+      {/* ── Contact email ── */}
+      <div className="footer__contact">
+        <p className="footer__contact-label">Get in touch</p>
+        <a href="mailto:connect@whereismymedicine.in" className="footer__email">
+          connect@whereismymedicine
+          <span className="footer__email-tld">.in</span>
+        </a>
+      </div>
+
       <div className="footer__bottom">
         <span>© {new Date().getFullYear()} WHERE IS MY MEDICINE</span>
-        <span>Made for patients, pharmacies & doctors.</span>
+        <span>Made for patients, pharmacies &amp; doctors.</span>
       </div>
     </footer>
   );
