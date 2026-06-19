@@ -1,3 +1,103 @@
+import { useState, useRef, useEffect } from "react";
+import { Icon } from "./Icons.jsx";
+import "../styles/phoneapp.css";
+
+// A working, interactive recreation of the WHERE IS MY MEDICINE app — built to
+// match the real glassmorphism UI (location chip, logo header, glass search
+// card, radius stepper, action tiles, consult banner) and let you actually
+// perform tasks: search a medicine, pick a pharmacy, add to cart, set a
+// reminder, chat with the AI and track an order.
+
+const MEDS = [
+  { name: "Paracetamol 500mg", form: "Tablet", cat: "Pain & fever", price: 28 },
+  { name: "Azithromycin 500", form: "Tablet", cat: "Antibiotic", price: 84 },
+  { name: "Cetirizine 10mg", form: "Tablet", cat: "Allergy", price: 22 },
+  { name: "Pantoprazole 40", form: "Tablet", cat: "Acidity", price: 56 },
+  { name: "Metformin 500mg", form: "Tablet", cat: "Diabetes", price: 35 },
+  { name: "Vitamin D3 60K", form: "Sachet", cat: "Supplement", price: 67 },
+  { name: "Amoxicillin 250", form: "Capsule", cat: "Antibiotic", price: 72 },
+  { name: "Dolo 650", form: "Tablet", cat: "Pain & fever", price: 31 },
+];
+
+// Placeholder demo pharmacies only — not real businesses.
+const PHARMACIES = [
+  { name: "ABC Pharmacy", dist: "0.8 km", rating: "4.8" },
+  { name: "XYZ Medicals", dist: "1.4 km", rating: "4.6" },
+  { name: "123 Drugstore", dist: "2.1 km", rating: "4.5" },
+];
+
+const RADII = [2, 4, 8, 16, 32];
+
+function StatusBar() {
+  return (
+    <div className="pa-status">
+      <span>9:41</span>
+      <span className="pa-status__r"><i /><i /><b /></span>
+    </div>
+  );
+}
+
+function Logo({ size = 46 }) {
+  return <img className="pa-logo" src="/logo.png" alt="" width={size} height={size} />;
+}
+
+export function PhoneApp({ route = "home", onNavigate, interactive = true, className = "" }) {
+  const go = (r) => interactive && onNavigate?.(r);
+
+  // --- shared app state (real tasks mutate these) ---
+  const [query, setQuery] = useState("");
+  const [chips, setChips] = useState([]);
+  const [radius, setRadius] = useState(0);
+  const [cart, setCart] = useState([]);
+  const [added, setAdded] = useState({});
+  const [reminders, setReminders] = useState([
+    { name: "Metformin 500mg", time: "8:00 AM", done: true },
+    { name: "Vitamin D3", time: "1:00 PM", done: false },
+    { name: "Atorvastatin", time: "9:30 PM", done: false },
+  ]);
+  const [messages, setMessages] = useState([
+    { who: "ai", text: "Hi! I'm your medicine assistant. Ask me anything about your medicines." },
+  ]);
+  const [chat, setChat] = useState("");
+  const [delivered, setDelivered] = useState(false);
+
+  const suggestions =
+    query.trim().length >= 1
+      ? MEDS.filter((m) => m.name.toLowerCase().includes(query.toLowerCase()) && !chips.some((c) => c.name === m.name)).slice(0, 4)
+      : [];
+
+  const addChip = (m) => { setChips((c) => [...c, m]); setQuery(""); };
+  const removeChip = (n) => setChips((c) => c.filter((x) => x.name !== n));
+  const search = () => { if (chips.length) go("results"); };
+  const addToCart = (ph, med) => {
+    const key = ph.name + med.name;
+    if (added[key]) return;
+    setAdded((a) => ({ ...a, [key]: true }));
+    setCart((c) => [...c, { ph: ph.name, ...med }]);
+  };
+  const addReminder = () => {
+    const pool = ["Amoxicillin 250", "Cetirizine 10mg", "Pantoprazole 40", "Dolo 650"];
+    const name = pool[reminders.length % pool.length];
+    const times = ["7:00 AM", "11:00 AM", "3:00 PM", "10:00 PM"];
+    setReminders((r) => [...r, { name, time: times[r.length % times.length], done: false }]);
+  };
+  const toggleReminder = (i) =>
+    setReminders((r) => r.map((x, j) => (j === i ? { ...x, done: !x.done } : x)));
+
+  const chatEndRef = useRef(null);
+  useEffect(() => { chatEndRef.current?.scrollIntoView({ block: "nearest" }); }, [messages]);
+  const sendChat = () => {
+    const text = chat.trim();
+    if (!text) return;
+    setMessages((m) => [...m, { who: "me", text }]);
+    setChat("");
+    setTimeout(() => {
+      setMessages((m) => [
+        ...m,
+        { who: "ai", text: "Good question — take it after food, and keep a 2-hour gap from antacids. Want me to set a reminder?" },
+      ]);
+    }, 650);
+  };
 
   const cartCount = cart.length;
   const searched = chips.length ? chips : [MEDS[1]];
@@ -179,7 +279,7 @@
       <div className="pa-ai">
         <div className="pa-head pa-head--ai">
           <span className="pa-ai__logo"><Icon name="spark" size={16} /></span>
-          <span><b>AI Assistant</b><small>Safe answers about your medicines</small></span>
+          <span><b>WIMM.ai</b><small>Safe answers about your medicines</small></span>
         </div>
         <div className="pa-chat">
           {messages.map((m, i) => (
@@ -248,3 +348,23 @@
   return (
     <div className={`phone phone--app ${interactive ? "" : "phone--static"} ${className}`}>
       <div className="phone__notch" />
+      <div className="phone__glass">
+        <div className="pa">
+          <StatusBar />
+          <Screen />
+          <nav className="pa-nav">
+            {TABS.map(([r, ic]) => (
+              <button
+                key={r}
+                className={`pa-nav__b ${route === r ? "is-active" : ""}`}
+                onClick={() => go(r)}
+              >
+                <Icon name={ic} size={20} />
+              </button>
+            ))}
+          </nav>
+        </div>
+      </div>
+    </div>
+  );
+}
