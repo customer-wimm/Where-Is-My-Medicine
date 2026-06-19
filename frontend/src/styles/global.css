@@ -1475,44 +1475,65 @@ a {
   display: inline-flex;
 }
 
-/* ---- responsive ---- */
+/* ---- responsive: tablet ---- */
 @media (max-width: 940px) {
   .tour__stage {
     grid-template-columns: 1fr;
     justify-items: center;
+    gap: 24px;
   }
   .tour__phone-wrap {
     order: -1;
-    min-height: 580px;
+    width: 100%;
+    max-width: 340px;
+    min-height: 0;
   }
   .tour__tabs {
     flex-direction: row;
     flex-wrap: nowrap;
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
     overflow-x: auto;
-    padding-bottom: 6px;
+    padding-bottom: 4px;
     scrollbar-width: none;
     gap: 8px;
+    -webkit-overflow-scrolling: touch;
   }
   .tour__tabs::-webkit-scrollbar { display: none; }
-  .tour__tab { flex: 0 0 auto; }
+  .tour__tab {
+    flex: 0 0 auto;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+  .tour__tab-label { white-space: nowrap; }
   .tour__callout {
-    max-width: 500px;
+    max-width: 600px;
     width: 100%;
     text-align: center;
   }
+  .tour__callout-inner { padding: 22px; }
   .tour__pips { justify-content: center; }
   .tour__dl-btn { margin: 0 auto; }
 }
 
-@media (max-width: 760px) {
-  .tour__phone-wrap {
-    min-height: 0;
+/* ---- responsive: phone ---- */
+@media (max-width: 600px) {
+  .tour__stage { gap: 20px; }
+  .tour__phone-wrap { max-width: 280px; }
+  .phone--tour { width: 260px; }
+  .tour__tab {
+    padding: 9px 12px;
+    font-size: 12px;
+    gap: 8px;
   }
-  .phone--tour {
-    width: 270px;
+  .tour__tab-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
   }
+  .tour__callout-title { font-size: 17px; }
+  .tour__callout-body  { font-size: 13px; }
+  .tour__glow { display: none; } /* save GPU on small phones */
 }
 
 /* ======================================================= feature card click */
@@ -1654,17 +1675,7 @@ a {
 }
 
 .whyus__sticky {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  display: grid;
-  grid-template-columns: 1fr 80px 260px;
-  align-items: center;
-  gap: 0 32px;
-  max-width: var(--maxw);
-  margin: 0 auto;
-  padding: 80px 24px;
-  overflow: hidden;
+  /* redefined below in the intro block — kept for mobile fallback only */
 }
 
 /* ---- left panel ---- */
@@ -1909,44 +1920,8 @@ a {
 
 /* ---- responsive ---- */
 @media (max-width: 940px) {
-  .whyus {
-    height: auto;
-    min-height: unset;
-  }
-  .whyus__sticky {
-    position: relative;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-    padding: 64px 24px;
-  }
-  .whyus__track-wrap,
-  .whyus__list {
-    display: none;
-  }
-  /* On mobile: show all points as stacked cards instead */
-  .whyus__left {
-    gap: 0;
-  }
-  .whyus__content {
-    animation: none;
-  }
-  .whyus__counter {
-    display: none;
-  }
-  /* Render all points manually via a static list on mobile */
-  .whyus__mobile-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-top: 32px;
-  }
-  .whyus__mobile-card {
-    padding: 22px;
-    border-radius: var(--r-md);
-    background: var(--surface);
-    border: 1px solid var(--border);
+  .whyus__content-layer {
+    grid-template-columns: 1fr;
   }
   .whyus__mobile-card h4 {
     font-size: 16px;
@@ -1961,7 +1936,209 @@ a {
 }
 
 @media (max-width: 760px) {
-  .whyus__sticky {
-    padding: 48px 18px;
+  .whyus__mob-intro { min-height: 280px; }
+}
+
+
+/* ================================================================= WHYUS INTRO (3-D capsule scene) */
+
+/* The sticky wrapper stacks intro + content in the same cell;
+   JS fades each layer in/out via inline opacity */
+.whyus__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: grid;
+  /* single cell — intro and content overlap */
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  max-width: var(--maxw);
+  margin: 0 auto;
+}
+
+/* ── Intro layer ── */
+.whyus__intro {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 24px 40px;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+.whyus__intro-eyebrow {
+  margin-bottom: 18px;
+}
+.whyus__intro-title {
+  font-size: clamp(34px, 6vw, 72px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 0;
+  /* text sits visually behind the canvas via z-index */
+  position: relative;
+  z-index: 0;
+}
+/* The Three.js canvas fills the intro scene */
+.whyus__intro-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* above text so capsule floats over headline */
+  pointer-events: none;
+}
+.whyus__intro-canvas canvas {
+  width: 100% !important;
+  height: 100% !important;
+  transition: opacity 0.3s ease;
+}
+
+/* ── Content layer (pill track + copy) ── */
+.whyus__content-layer {
+  grid-area: 1 / 1;
+  display: grid;
+  grid-template-columns: 1fr 80px 260px;
+  align-items: center;
+  gap: 0 32px;
+  padding: 80px 24px;
+  transition: opacity 0.3s ease;
+  z-index: 3;
+}
+
+/* ── Mobile: separate intro banner ── */
+.whyus--mobile {
+  height: auto !important;
+  padding: 0;
+}
+.whyus__mob-intro {
+  position: relative;
+  min-height: 56vw;
+  max-height: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 32px 24px 28px;
+  text-align: center;
+  overflow: hidden;
+  background: radial-gradient(ellipse 80% 60% at 50% 40%, color-mix(in srgb, var(--brand) 18%, transparent), transparent 80%);
+}
+/* Capsule wrapper — starts below, rises in */
+.whyus__mob-capsule-wrap {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(60px) scale(0.7);
+  opacity: 0;
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity   0.7s ease;
+}
+.whyus__mob-capsule-wrap.is-visible {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+/* CSS-only 3-D capsule */
+.whyus__mob-capsule {
+  position: relative;
+  width: 56px;
+  animation: mob-capsule-spin 6s linear infinite;
+  filter: drop-shadow(0 0 28px color-mix(in srgb, var(--accent) 70%, transparent));
+}
+@keyframes mob-capsule-spin {
+  from { transform: rotateY(0deg) rotateZ(20deg); }
+  to   { transform: rotateY(360deg) rotateZ(20deg); }
+}
+.whyus__mob-cap-top {
+  width: 56px;
+  height: 56px;
+  border-radius: 28px 28px 0 0;
+  background: linear-gradient(160deg, var(--accent), var(--brand));
+  box-shadow: inset 0 4px 8px rgba(255,255,255,0.3);
+}
+.whyus__mob-cap-body {
+  width: 56px;
+  height: 52px;
+  background: linear-gradient(180deg,
+    var(--brand) 0%, color-mix(in srgb, var(--brand) 60%, #eafff4) 50%, #eafff4 100%);
+  border-left: 1.5px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  border-right: 1.5px solid color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.whyus__mob-cap-bot {
+  width: 56px;
+  height: 56px;
+  border-radius: 0 0 28px 28px;
+  background: linear-gradient(200deg, #eafff4, var(--mint));
+  box-shadow: inset 0 -4px 8px rgba(111,231,168,0.4);
+}
+/* glow rings */
+.whyus__mob-ring {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 80px; height: 120px;
+  border-radius: 999px;
+  border: 1.5px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  transform: translate(-50%, -50%);
+  animation: mob-ring-pulse 2.4s ease-out infinite;
+  pointer-events: none;
+}
+.whyus__mob-ring--2 { width: 110px; height: 160px; animation-delay: 0.5s; opacity: 0.6; }
+.whyus__mob-ring--3 { width: 140px; height: 200px; animation-delay: 1.0s; opacity: 0.35; }
+@keyframes mob-ring-pulse {
+  0%   { opacity: 0.8; transform: translate(-50%,-50%) scale(0.85); }
+  100% { opacity: 0;   transform: translate(-50%,-50%) scale(1.4); }
+}
+/* Intro text rises in */
+.whyus__mob-intro-text {
+  position: relative;
+  z-index: 2;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: transform 0.7s cubic-bezier(0.22,1,0.36,1) 0.25s,
+              opacity   0.6s ease 0.25s;
+}
+.whyus__mob-intro-text.is-visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+.whyus__mob-intro-text .eyebrow { margin-bottom: 10px; }
+.whyus__mob-intro-text .whyus__title {
+  font-size: clamp(26px, 7vw, 38px);
+}
+/* Mobile card list */
+.whyus__mobile-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px 18px 60px;
+}
+.whyus__mobile-card {
+  padding: 20px 18px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+}
+.whyus__mobile-card h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 8px 0 6px;
+}
+.whyus__mobile-card p {
+  font-size: 14px;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+/* ── Desktop content-layer responsive ── */
+@media (max-width: 1100px) {
+  .whyus__content-layer {
+    grid-template-columns: 1fr 70px 220px;
+    gap: 0 20px;
   }
 }
