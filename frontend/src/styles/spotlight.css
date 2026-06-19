@@ -1,0 +1,52 @@
+/* ---- Cursor spotlight: a fixed clone clipped to a circle at the cursor ---- */
+
+.app-root {
+  position: relative;
+}
+
+/* The reveal layer sits above the base page and shows the opposite theme.
+   It's clipped to a circle that follows the cursor (set from JS). */
+.reveal {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  overflow: hidden;
+  clip-path: circle(0px at -200px -200px);
+  will-change: clip-path;
+}
+
+/* Holds the duplicated page. Translated by -scrollY so it tracks the base
+   layer as the user scrolls; width pinned to the base content width. */
+.reveal__inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+
+/* The thin glowing outline drawn around the lens. */
+.reveal__ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--brand) 60%, transparent);
+  box-shadow:
+    0 0 30px color-mix(in srgb, var(--brand) 35%, transparent),
+    inset 0 0 24px color-mix(in srgb, var(--brand) 18%, transparent);
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  will-change: transform, width, height;
+}
+
+/* Honour reduced-motion / touch: the lens still works but without the grow. */
+@media (hover: none) {
+  .reveal__ring {
+    display: none;
+  }
+}

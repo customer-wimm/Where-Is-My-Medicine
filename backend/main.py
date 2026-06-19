@@ -1,0 +1,135 @@
+"""
+WHERE IS MY MEDICINE — marketing/demo website backend.
+
+A small FastAPI app that:
+  * serves the Android APK with a download counter
+  * exposes basic stats (download count)
+  * accepts contact / "request access" leads
+  * (in production) serves the built React frontend from frontend/dist
+
+Run dev:  uvicorn main:app --reload --port 8000
+"""
+
+from __future__ import annotations
+
+import json
+import os
+from datetime import datetime, timezone
+from pathlib import Path
+
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel, EmailStr, Field
+
+BASE_DIR = Path(__file__).resolve().parent
+DOWNLOADS_DIR = BASE_DIR / "downloads"
+DATA_DIR = BASE_DIR / "data"
+DATA_DIR.mkdir(exist_ok=True)
+
+APK_FILE = DOWNLOADS_DIR / "where-is-my-medicine.apk"
+STATS_FILE = DATA_DIR / "stats.json"
+LEADS_FILE = DATA_DIR / "leads.json"
+
+APP_NAME = "WHERE IS MY MEDICINE"
+APK_VERSION = os.environ.get("WIMM_APK_VERSION", "2.0")
+
+app = FastAPI(title=f"{APP_NAME} — Website API", version="1.0.0")
+
+# During dev the Vite frontend runs on :5173. In prod everything is same-origin.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+# ----------------------------------------------------------------------------
+# tiny JSON "store" helpers (no DB needed for a landing page)
+# ----------------------------------------------------------------------------
+def _read_json(path: Path, default):
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError):
+        return default
+
+
+def _write_json(path: Path, value) -> None:
+    path.write_text(json.dumps(value, indent=2), encoding="utf-8")
+
+
+def _bump_downloads() -> int:
+    stats = _read_json(STATS_FILE, {"downloads": 0})
+    stats["downloads"] = int(stats.get("downloads", 0)) + 1
+    stats["updated_at"] = datetime.now(timezone.utc).isoformat()
+    _write_json(STATS_FILE, stats)
+    return stats["downloads"]
+
+
+# ----------------------------------------------------------------------------
+# models
+# ----------------------------------------------------------------------------
+class Lead(BaseModel):
+    name: str = Field(min_length=1, max_length=120)
+    email: EmailStr
+    role: str = Field(default="customer", max_length=40)  # customer | pharmacy | doctor
+    message: str = Field(default="", max_length=2000)
+
+
+# ----------------------------------------------------------------------------
+# API
+# ----------------------------------------------------------------------------
+@app.get("/api/health")
+def health():
+    return {"status": "ok", "app": APP_NAME}
+
+
+@app.get("/api/stats")
+def stats():
+    data = _read_json(STATS_FILE, {"downloads": 0})
+    return {
+        "downloads": int(data.get("downloads", 0)),
+        "version": APK_VERSION,
+        "apk_available": APK_FILE.exists(),
+        "size_mb": round(APK_FILE.stat().st_size / 1_048_576, 1) if APK_FILE.exists() else 0,
+    }
+
+
+@app.get("/api/download")
+def download():
+    if not APK_FILE.exists():
+        raise HTTPException(status_code=404, detail="APK not found on server.")
+    _bump_downloads()
+    return FileResponse(
+        APK_FILE,
+        media_type="application/vnd.android.package-archive",
+        filename=f"where-is-my-medicine-v{APK_VERSION}.apk",
+    )
+
+
+@app.post("/api/contact")
+async def contact(lead: Lead, request: Request):
+    leads = _read_json(LEADS_FILE, [])
+    leads.append(
+        {
+            **lead.model_dump(),
+            "ip": request.client.host if request.client else None,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+    )
+    _write_json(LEADS_FILE, leads)
+    return JSONResponse({"ok": True, "message": "Thanks! We'll be in touch."})
+
+
+# ----------------------------------------------------------------------------
+# serve built frontend (production). Safe no-op while developing with Vite.
+# ----------------------------------------------------------------------------
+_DIST = BASE_DIR.parent / "frontend" / "dist"
+if _DIST.exists():
+    app.mount("/", StaticFiles(directory=str(_DIST), html=True), name="static")
