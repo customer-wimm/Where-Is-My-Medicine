@@ -3,6 +3,7 @@ import { Nav } from "./components/Nav.jsx";
 import { Hero } from "./components/Hero.jsx";
 import { HowItWorks } from "./components/HowItWorks.jsx";
 import { Features } from "./components/Features.jsx";
+import { WhyUs } from "./components/WhyUs.jsx";
 import { Demo } from "./components/Demo.jsx";
 import { DownloadCTA } from "./components/DownloadCTA.jsx";
 import { Footer } from "./components/Footer.jsx";
@@ -16,6 +17,7 @@ function Page({ theme, dark, onToggleTheme }) {
         <Hero />
         <HowItWorks />
         <Features />
+        <WhyUs />
         <Demo />
         <DownloadCTA />
       </main>
@@ -24,9 +26,6 @@ function Page({ theme, dark, onToggleTheme }) {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Scroll-reveal: fade-up elements as they enter the viewport
-// ---------------------------------------------------------------------------
 function useScrollReveal() {
   useEffect(() => {
     if (typeof IntersectionObserver === "undefined") {
@@ -89,13 +88,6 @@ export default function App() {
       raf.current = requestAnimationFrame(apply);
     };
 
-    // -----------------------------------------------------------------------
-    // Zone classification:
-    //   "flip"      → show the opposite-theme circle (normal spotlight)
-    //   "ring-only" → show only the glowing ring outline, no theme flip inside
-    //                 (download form, contact section — so forms stay readable)
-    //   "none"      → cursor is in the nav or demo section; hide everything
-    // -----------------------------------------------------------------------
     const zoneFor = (x, y) => {
       const hit = (el) => {
         if (!el) return false;
@@ -104,18 +96,11 @@ export default function App() {
       };
       if (hit(document.querySelector(".nav"))) return "none";
       if (hit(document.getElementById("demo"))) return "none";
-      // Download / contact / footer — keep ring but suppress theme-flip fill
       if (
         hit(document.getElementById("download")) ||
         hit(document.querySelector(".footer"))
       ) return "ring-only";
       return "flip";
-    };
-
-    const updateRingVisibility = (zone, r) => {
-      if (!ring) return;
-      const showRing = zone !== "none" && r > 0;
-      ring.style.opacity = showRing ? "1" : "0";
     };
 
     const onMove = (e) => {
@@ -125,28 +110,27 @@ export default function App() {
 
       if (zone === "none") {
         pos.current.r = 0;
-      } else {
-        pos.current.r = Math.min(RADIUS, pos.current.r + 60) || RADIUS;
+        if (ring) ring.style.opacity = "0";
+        schedule();
+        return;
       }
 
-      // For ring-only zones: clip the reveal layer to 0px (hides theme flip)
-      // but keep the ring drawn at the cursor position.
+      pos.current.r = Math.min(RADIUS, pos.current.r + 60) || RADIUS;
+
       if (zone === "ring-only") {
-        const { x, y } = pos.current;
-        const r = pos.current.r;
+        const { x, y, r } = pos.current;
         if (ring) {
           ring.style.transform = `translate(${x - r}px, ${y - r}px)`;
           ring.style.width = ring.style.height = `${r * 2}px`;
           ring.style.opacity = "1";
         }
-        // collapse the fill but keep inner in sync for scroll
         reveal.style.clipPath = `circle(0px at ${x}px ${y}px)`;
         inner.style.transform = `translateY(${-window.scrollY}px)`;
         inner.style.width = `${document.documentElement.clientWidth}px`;
         return;
       }
 
-      updateRingVisibility(zone, pos.current.r);
+      if (ring) ring.style.opacity = pos.current.r > 0 ? "1" : "0";
       schedule();
     };
 
