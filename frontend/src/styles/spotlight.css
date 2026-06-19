@@ -1,0 +1,48 @@
+/* =====================================================================
+   Cursor "theme flip" spotlight.
+   App.jsx drives the math (clip-path circle position/radius); this file
+   only handles the layout and look of the overlay it manipulates.
+   ===================================================================== */
+.reveal {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  clip-path: circle(0px at -9999px -9999px);
+  pointer-events: none;
+  z-index: 25;
+}
+
+.reveal__inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.reveal__ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  box-shadow: 0 0 24px -4px var(--accent);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 26;
+  transition: opacity 0.25s ease;
+}
+
+/* phones & touch: no pointer to track, skip the effect entirely */
+@media (hover: none), (max-width: 760px) {
+  .reveal,
+  .reveal__ring {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal__ring {
+    transition: none;
+  }
+}

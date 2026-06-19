@@ -1,0 +1,311 @@
+/* =====================================================================
+   In-phone app UI — faithful glassmorphism recreation of the real app.
+   Uses theme CSS vars so it flips light/dark inside the spotlight too.
+   ===================================================================== */
+
+.phone--app .phone__glass {
+  background:
+    radial-gradient(120% 55% at 50% 0%, var(--bg-3), transparent 60%),
+    linear-gradient(180deg, var(--bg), var(--bg-2));
+}
+.phone--static {
+  pointer-events: none;
+}
+
+.pa {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-app);
+  color: var(--text);
+  font-size: 12px;
+}
+.pa * { box-sizing: border-box; }
+
+.pa-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 16px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  flex: none;
+}
+.pa-status__r { display: flex; align-items: center; gap: 3px; }
+.pa-status__r i { width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
+.pa-status__r b { width: 16px; height: 9px; border-radius: 2px; border: 1.5px solid currentColor; }
+
+.pa-scroll,
+.pa-ai {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scrollbar-width: none;
+}
+.pa-scroll::-webkit-scrollbar { display: none; }
+
+.pa-logo { display: block; object-fit: contain; }
+
+/* ---- top bar ---- */
+.pa-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.pa-loc {
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 11px; border: none; cursor: pointer;
+  border-radius: 18px;
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-border);
+  color: var(--text); font-family: inherit;
+}
+.pa-loc__pin {
+  display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%;
+  color: var(--app-brand);
+  background: color-mix(in srgb, var(--app-brand) 18%, transparent);
+}
+.pa-loc__txt { display: flex; flex-direction: column; text-align: left; line-height: 1.1; }
+.pa-loc__txt small { font-size: 8px; color: var(--text-soft); }
+.pa-loc__txt b { font-size: 11px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pa-top__btns { display: flex; gap: 8px; }
+.pa-iconbtn {
+  position: relative;
+  width: 38px; height: 38px; border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer;
+  background: var(--glass-strong); border: 1px solid var(--glass-border);
+  color: var(--text);
+}
+.pa-badge {
+  position: absolute; top: -3px; right: -3px; min-width: 16px; height: 16px; padding: 0 4px;
+  display: grid; place-items: center; border-radius: 9px;
+  background: var(--brand); color: #fff; font-size: 9px; font-weight: 800;
+  border: 1.5px solid var(--glass-strong);
+}
+.pa-dot {
+  position: absolute; top: 7px; right: 8px; width: 8px; height: 8px; border-radius: 50%;
+  background: #e53935; border: 1.5px solid var(--glass-strong);
+}
+
+/* ---- logo header ---- */
+.pa-brand { display: flex; align-items: center; gap: 11px; padding: 2px 2px; }
+.pa-brand__txt { display: flex; flex-direction: column; line-height: 1.05; }
+.pa-brand__txt span { font-size: 19px; font-weight: 800; }
+.pa-brand__txt b { font-size: 19px; font-weight: 800; color: var(--app-brand); }
+
+/* ---- glass card ---- */
+.pa-glass {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  padding: 14px;
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+/* ---- search ---- */
+.pa-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.pa-chip {
+  display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
+  padding: 6px 10px; border-radius: 999px; font-family: inherit; font-size: 11px; font-weight: 600;
+  color: var(--app-brand);
+  background: color-mix(in srgb, var(--app-brand) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--app-brand) 30%, transparent);
+}
+.pa-field {
+  display: flex; align-items: center; gap: 9px;
+  padding: 11px 13px; border-radius: 14px;
+  background: var(--field);
+  border: 1px solid var(--field-border);
+  color: var(--app-brand);
+}
+.pa-field input {
+  flex: 1; border: none; outline: none; background: transparent;
+  font-family: inherit; font-size: 13px; color: var(--text);
+}
+.pa-field input::placeholder { color: var(--text-soft); }
+
+.pa-suggest {
+  border-radius: 13px; overflow: hidden;
+  background: var(--field); border: 1px solid var(--field-border);
+}
+.pa-suggest__row {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding: 10px 12px; cursor: pointer;
+  background: none; border: none; border-bottom: 1px solid var(--field-border);
+  font-family: inherit; color: var(--text); text-align: left;
+}
+.pa-suggest__row:last-child { border-bottom: none; }
+.pa-suggest__row span:first-child { display: flex; flex-direction: column; }
+.pa-suggest__row b { font-size: 12.5px; font-weight: 600; }
+.pa-suggest__row small { font-size: 10px; color: var(--text-soft); }
+.pa-plus {
+  display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%;
+  color: var(--app-brand); background: color-mix(in srgb, var(--app-brand) 15%, transparent);
+}
+
+.pa-or { display: flex; align-items: center; gap: 8px; }
+.pa-or span { flex: 1; height: 1px; background: var(--field-border); }
+.pa-or small { font-size: 10px; color: var(--text-soft); }
+
+/* ---- buttons ---- */
+.pa-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 12px; border-radius: 13px; cursor: pointer;
+  font-family: inherit; font-weight: 700; font-size: 13px; border: 1px solid transparent;
+}
+.pa-btn--primary { color: #042b16; background: linear-gradient(135deg, var(--accent), var(--brand)); }
+.pa-btn--outline { color: var(--app-brand); background: transparent; border: 1.5px solid color-mix(in srgb, var(--app-brand) 50%, transparent); }
+.pa-btn--sm { padding: 8px 14px; font-size: 12px; border-radius: 11px; }
+.pa-btn--sm.is-added { color: var(--app-brand); background: color-mix(in srgb, var(--app-brand) 14%, transparent); }
+.pa-sticky { position: sticky; bottom: 0; }
+
+/* ---- radius row ---- */
+.pa-row { flex-direction: row; align-items: center; justify-content: space-between; }
+.pa-row__l { display: flex; align-items: center; gap: 11px; }
+.pa-row__l b { font-size: 13px; font-weight: 600; display: block; }
+.pa-row__l small { font-size: 10px; color: var(--text-soft); }
+.pa-radius {
+  position: relative; display: grid; place-items: center; width: 40px; height: 40px;
+  border-radius: 50%; color: var(--app-brand);
+  background: color-mix(in srgb, var(--app-brand) 12%, transparent);
+}
+.pa-radius span {
+  position: absolute; inset: 6px; border-radius: 50%;
+  border: 1.5px dashed color-mix(in srgb, var(--app-brand) 45%, transparent);
+}
+.pa-step { display: flex; align-items: center; gap: 4px; }
+.pa-step button {
+  width: 28px; height: 28px; border-radius: 9px; cursor: pointer; font-size: 16px;
+  color: var(--app-brand); background: color-mix(in srgb, var(--app-brand) 12%, transparent);
+  border: none; font-family: inherit;
+}
+.pa-step b { min-width: 48px; text-align: center; font-size: 14px; color: var(--app-brand); }
+
+/* ---- action tiles ---- */
+.pa-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pa-tile {
+  display: flex; flex-direction: column; gap: 9px; cursor: pointer; text-align: left;
+  padding: 14px; border-radius: 16px; font-family: inherit; font-size: 12px; font-weight: 600;
+  color: var(--text); background: var(--glass); border: 1px solid var(--glass-border);
+}
+.pa-tile__ic {
+  display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px;
+  color: var(--app-brand); background: color-mix(in srgb, var(--app-brand) 13%, transparent);
+}
+
+/* ---- consult banner ---- */
+.pa-consult {
+  display: flex; align-items: center; gap: 12px; cursor: pointer; text-align: left;
+  padding: 14px; border-radius: 18px; font-family: inherit; color: var(--text);
+  border: 1px solid var(--glass-border);
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--app-brand) 22%, transparent),
+    color-mix(in srgb, var(--app-brand) 7%, transparent));
+}
+.pa-consult__ic {
+  display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
+  background: var(--app-brand); color: #fff;
+}
+.pa-consult__txt { flex: 1; display: flex; flex-direction: column; }
+.pa-consult__txt b { font-size: 14px; }
+.pa-consult__txt small { font-size: 11px; color: var(--text-soft); }
+
+/* ---- list headers / back ---- */
+.pa-head { display: flex; align-items: center; gap: 10px; padding: 2px; }
+.pa-head > span { display: flex; flex-direction: column; }
+.pa-head b { font-size: 16px; font-weight: 800; }
+.pa-head small { font-size: 11px; color: var(--text-soft); }
+.pa-back {
+  width: 32px; height: 32px; border-radius: 10px; cursor: pointer; font-size: 20px; line-height: 1;
+  color: var(--text); background: var(--glass-strong); border: 1px solid var(--glass-border); font-family: inherit;
+}
+
+/* ---- pharmacy result cards ---- */
+.pa-pharm { gap: 12px; }
+.pa-pharm__top { display: flex; align-items: center; gap: 11px; }
+.pa-pharm__logo {
+  display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px;
+  color: var(--app-brand); background: color-mix(in srgb, var(--app-brand) 13%, transparent);
+}
+.pa-pharm__info { display: flex; flex-direction: column; }
+.pa-pharm__info b { font-size: 14px; }
+.pa-pharm__info small { font-size: 10.5px; color: var(--text-soft); }
+.pa-pharm__bottom { display: flex; align-items: center; justify-content: space-between; }
+.pa-price { font-size: 17px; font-weight: 800; color: var(--app-brand); }
+
+/* ---- reminders ---- */
+.pa-rem { flex-direction: row; align-items: center; gap: 11px; }
+.pa-tick {
+  width: 24px; height: 24px; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
+  color: #042b16; border: 2px solid var(--field-border); background: transparent;
+}
+.pa-tick.is-done { background: var(--accent); border-color: var(--accent); }
+.pa-rem__info { flex: 1; display: flex; flex-direction: column; }
+.pa-rem__info b { font-size: 13px; }
+.pa-rem__info small { font-size: 10.5px; color: var(--text-soft); }
+.pa-rem__pill { color: var(--app-brand); }
+
+/* ---- AI chat ---- */
+.pa-ai { gap: 10px; }
+.pa-head--ai { padding-top: 0; }
+.pa-ai__logo {
+  display: grid; place-items: center; width: 34px; height: 34px; border-radius: 11px;
+  color: #042b16; background: linear-gradient(135deg, var(--accent), var(--mint));
+}
+.pa-chat { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 9px; scrollbar-width: none; }
+.pa-chat::-webkit-scrollbar { display: none; }
+.pa-bubble { max-width: 84%; padding: 10px 13px; border-radius: 15px; font-size: 12px; line-height: 1.45; }
+.pa-bubble--ai { background: var(--glass); border: 1px solid var(--glass-border); border-bottom-left-radius: 5px; }
+.pa-bubble--me { align-self: flex-end; color: #042b16; background: linear-gradient(135deg, var(--accent), var(--brand)); border-bottom-right-radius: 5px; }
+.pa-aiinput {
+  display: flex; align-items: center; gap: 8px; padding: 7px 8px 7px 14px; border-radius: 16px;
+  background: var(--field); border: 1px solid var(--field-border);
+}
+.pa-aiinput input { flex: 1; border: none; outline: none; background: transparent; font-family: inherit; font-size: 12.5px; color: var(--text); }
+.pa-aiinput input::placeholder { color: var(--text-soft); }
+.pa-aiinput button {
+  width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
+  color: #042b16; background: var(--accent); border: none;
+}
+
+/* ---- tracking ---- */
+.pa-map {
+  position: relative; height: 120px; border-radius: 16px; overflow: hidden; flex: none;
+  border: 1px solid var(--glass-border);
+  background:
+    repeating-linear-gradient(0deg, transparent 0 17px, color-mix(in srgb, var(--app-brand) 7%, transparent) 17px 18px),
+    repeating-linear-gradient(90deg, transparent 0 17px, color-mix(in srgb, var(--app-brand) 7%, transparent) 17px 18px),
+    var(--glass);
+}
+.pa-map__route {
+  position: absolute; left: 16%; top: 68%; width: 66%; height: 42%;
+  border-top: 2.5px dashed var(--app-brand); border-right: 2.5px dashed var(--app-brand);
+  border-top-right-radius: 40px; transform: rotate(-6deg);
+}
+.pa-map__pin {
+  position: absolute; display: grid; place-items: center; width: 26px; height: 26px;
+  border-radius: 50% 50% 50% 2px; transform: rotate(45deg); color: #fff;
+}
+.pa-map__pin > svg { transform: rotate(-45deg); }
+.pa-map__pin--a { left: 12%; top: 60%; background: var(--brand-deep); }
+.pa-map__pin--b { right: 11%; top: 14%; background: var(--brand); }
+.pa-steps { gap: 9px; }
+.pa-tstep { display: flex; align-items: center; gap: 9px; font-size: 12px; color: var(--text-soft); }
+.pa-tstep__dot { width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--field-border); }
+.pa-tstep.is-done { color: var(--text); font-weight: 600; }
+.pa-tstep.is-done .pa-tstep__dot { background: var(--accent); border-color: var(--accent); }
+
+/* ---- bottom nav ---- */
+.pa-nav {
+  flex: none; display: flex; justify-content: space-around; align-items: center;
+  padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+  background: var(--glass-strong); border-top: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+}
+.pa-nav__b {
+  width: 42px; height: 36px; border-radius: 11px; cursor: pointer; display: grid; place-items: center;
+  color: var(--text-soft); background: transparent; border: none;
+}
+.pa-nav__b.is-active { color: var(--app-brand); background: color-mix(in srgb, var(--app-brand) 13%, transparent); }
