@@ -2,16 +2,12 @@ import { useState, useEffect, useRef } from "react";
 import { PhoneApp } from "./PhoneApp.jsx";
 import { Icon } from "./Icons.jsx";
 
-// ---------------------------------------------------------------------------
-// Tour stops — each maps to a phone screen + hotspot dot + callout copy
-// ---------------------------------------------------------------------------
 const STOPS = [
   {
     id: "home",
     label: "Search & Scan",
     icon: "search",
     route: "home",
-    // position of the pulsing dot: % from top-left of the phone frame
     dot: { x: 50, y: 38 },
     callout: {
       title: "Smart Medicine Search",
@@ -48,7 +44,7 @@ const STOPS = [
     dot: { x: 50, y: 72 },
     callout: {
       title: "Ask Anything",
-      body: "Your personal medicine assistant answers questions in plain language — drug interactions, dosage, side effects — available 24 / 7, in your language.",
+      body: "Your personal medicine assistant answers questions in plain language — drug interactions, dosage, side effects — available 24/7, in your language.",
     },
   },
   {
@@ -68,8 +64,9 @@ const AUTO_ADVANCE_MS = 4000;
 
 export function Demo() {
   const [activeIdx, setActiveIdx] = useState(0);
-  const [animating, setAnimating] = useState(false);
-  const timerRef = useRef(null);
+  const [animating, setAnimating]  = useState(false);
+  const timerRef  = useRef(null);
+  const tabsRef   = useRef(null);
   const stop = STOPS[activeIdx];
 
   // Auto-advance
@@ -78,6 +75,16 @@ export function Demo() {
       goTo((activeIdx + 1) % STOPS.length);
     }, AUTO_ADVANCE_MS);
     return () => clearTimeout(timerRef.current);
+  }, [activeIdx]);
+
+  // Scroll active tab into view on mobile
+  useEffect(() => {
+    const rail = tabsRef.current;
+    if (!rail) return;
+    const activeBtn = rail.children[activeIdx];
+    if (activeBtn) {
+      activeBtn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    }
   }, [activeIdx]);
 
   function goTo(idx) {
@@ -92,25 +99,24 @@ export function Demo() {
 
   return (
     <section className="section tour" id="demo">
-      {/* ── section head ── */}
       <div className="section__head reveal-up">
         <span className="eyebrow">Product Tour</span>
         <h2 className="section__title">See the app, feature by feature.</h2>
         <p className="section__sub">
-          Click any tab to explore a feature. The guide dot shows you exactly what to look at.
+          Tap any tab to explore a feature. The guide dot shows exactly what to look at.
         </p>
       </div>
 
-      {/* ── main stage ── */}
       <div className="tour__stage reveal-up reveal-up--delay">
 
-        {/* left: feature tabs */}
-        <aside className="tour__tabs">
+        {/* ── Tab rail — left on desktop, scrollable strip on mobile ── */}
+        <aside className="tour__tabs" ref={tabsRef}>
           {STOPS.map((s, i) => (
             <button
               key={s.id}
               className={`tour__tab ${i === activeIdx ? "is-active" : ""}`}
               onClick={() => goTo(i)}
+              aria-pressed={i === activeIdx}
             >
               <span className="tour__tab-icon">
                 <Icon name={s.icon} size={18} />
@@ -128,7 +134,7 @@ export function Demo() {
           ))}
         </aside>
 
-        {/* centre: phone + hotspot dot */}
+        {/* ── Phone + hotspot dot ── */}
         <div className="tour__phone-wrap">
           <div className="tour__glow" />
           <PhoneApp
@@ -136,13 +142,9 @@ export function Demo() {
             interactive={false}
             className="phone--tour"
           />
-          {/* guide dot */}
           <div
             className={`tour__dot ${animating ? "tour__dot--hide" : ""}`}
-            style={{
-              left: `${stop.dot.x}%`,
-              top: `${stop.dot.y}%`,
-            }}
+            style={{ left: `${stop.dot.x}%`, top: `${stop.dot.y}%` }}
           >
             <span className="tour__dot-ring" />
             <span className="tour__dot-ring tour__dot-ring--2" />
@@ -150,7 +152,7 @@ export function Demo() {
           </div>
         </div>
 
-        {/* right: callout card */}
+        {/* ── Callout card ── */}
         <div className={`tour__callout ${animating ? "tour__callout--hide" : ""}`}>
           <div className="tour__callout-inner">
             <span className="tour__callout-icon">
@@ -160,7 +162,6 @@ export function Demo() {
             <p className="tour__callout-body">{stop.callout.body}</p>
           </div>
 
-          {/* step counter dots */}
           <div className="tour__pips">
             {STOPS.map((_, i) => (
               <button
