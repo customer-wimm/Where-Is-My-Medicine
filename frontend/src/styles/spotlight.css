@@ -5,7 +5,8 @@
 }
 
 /* The reveal layer sits above the base page and shows the opposite theme.
-   It's clipped to a circle that follows the cursor (set from JS). */
+   It's clipped to a circle that follows the cursor (set from JS).
+   pointer-events: none ensures you can still click the page beneath. */
 .reveal {
   position: fixed;
   inset: 0;
@@ -25,7 +26,8 @@
   will-change: transform;
 }
 
-/* The thin glowing outline drawn around the lens. */
+/* The thin glowing outline drawn around the lens.
+   When the lens is suppressed (r=0) it shrinks to 0 and fades out. */
 .reveal__ring {
   position: fixed;
   top: 0;
@@ -42,6 +44,13 @@
   opacity: 0;
   transition: opacity 0.3s ease;
   will-change: transform, width, height;
+}
+
+/* Ring-only mode: when hovering over a no-flip zone we still draw the ring
+   but at radius 0 (so it's invisible), then the JS explicitly shows the
+   ring-only overlay for those zones. This class is toggled by App.jsx. */
+.reveal__ring--ring-only {
+  opacity: 1 !important;
 }
 
 /* On touch devices (phones/tablets) there's no hover, and cloning the whole
