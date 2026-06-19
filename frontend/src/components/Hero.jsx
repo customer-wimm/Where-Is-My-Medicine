@@ -36,9 +36,6 @@ export function Hero() {
           <div><b>{stats.size_mb} MB</b><span>APK size</span></div>
           <div><b>{stats.downloads.toLocaleString()}</b><span>Downloads</span></div>
         </div>
-        <p className="hero__hint">
-          ✦ Move your cursor across the page to peek the {`{`}opposite{`}`} theme.
-        </p>
       </div>
 
       <div className="hero__art">
