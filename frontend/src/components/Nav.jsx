@@ -8,6 +8,7 @@ export function Nav({ dark, onToggleTheme }) {
       <nav className="nav__links">
         <a href="#how">How it works</a>
         <a href="#features">Features</a>
+        <a href="#why">Why us</a>
         <a href="#demo">Tour</a>
       </nav>
       <div className="nav__actions">
