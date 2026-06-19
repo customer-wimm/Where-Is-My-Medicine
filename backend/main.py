@@ -19,7 +19,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr, Field
 
@@ -34,6 +34,10 @@ LEADS_FILE = DATA_DIR / "leads.json"
 
 APP_NAME = "WHERE IS MY MEDICINE"
 APK_VERSION = os.environ.get("WIMM_APK_VERSION", "2.0")
+# When the APK isn't bundled on the server (e.g. it's too big to commit), set
+# WIMM_APK_URL to a hosted copy — a GitHub Release asset works well — and the
+# download endpoint will redirect there instead.
+APK_URL = os.environ.get("WIMM_APK_URL", "")
 
 app = FastAPI(title=f"{APP_NAME} — Website API", version="1.0.0")
 
@@ -96,21 +100,25 @@ def stats():
     return {
         "downloads": int(data.get("downloads", 0)),
         "version": APK_VERSION,
-        "apk_available": APK_FILE.exists(),
+        "apk_available": APK_FILE.exists() or bool(APK_URL),
         "size_mb": round(APK_FILE.stat().st_size / 1_048_576, 1) if APK_FILE.exists() else 0,
     }
 
 
 @app.get("/api/download")
 def download():
-    if not APK_FILE.exists():
-        raise HTTPException(status_code=404, detail="APK not found on server.")
-    _bump_downloads()
-    return FileResponse(
-        APK_FILE,
-        media_type="application/vnd.android.package-archive",
-        filename=f"where-is-my-medicine-v{APK_VERSION}.apk",
-    )
+    # Prefer the bundled APK; fall back to a hosted URL; otherwise 404.
+    if APK_FILE.exists():
+        _bump_downloads()
+        return FileResponse(
+            APK_FILE,
+            media_type="application/vnd.android.package-archive",
+            filename=f"where-is-my-medicine-v{APK_VERSION}.apk",
+        )
+    if APK_URL:
+        _bump_downloads()
+        return RedirectResponse(APK_URL, status_code=307)
+    raise HTTPException(status_code=404, detail="APK not found on server.")
 
 
 @app.post("/api/contact")
