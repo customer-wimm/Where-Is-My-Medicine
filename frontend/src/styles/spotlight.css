@@ -1,0 +1,64 @@
+/* ---- Cursor spotlight: a fixed clone clipped to a circle at the cursor ---- */
+
+.app-root {
+  position: relative;
+}
+
+/* The reveal layer sits above the base page and shows the opposite theme.
+   It's clipped to a circle that follows the cursor (set from JS).
+   pointer-events: none ensures you can still click the page beneath. */
+.reveal {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  overflow: hidden;
+  clip-path: circle(0px at -200px -200px);
+  will-change: clip-path;
+}
+
+/* Holds the duplicated page. Translated by -scrollY so it tracks the base
+   layer as the user scrolls; width pinned to the base content width. */
+.reveal__inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+
+/* The thin glowing outline drawn around the lens.
+   When the lens is suppressed (r=0) it shrinks to 0 and fades out. */
+.reveal__ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--brand) 60%, transparent);
+  box-shadow:
+    0 0 30px color-mix(in srgb, var(--brand) 35%, transparent),
+    inset 0 0 24px color-mix(in srgb, var(--brand) 18%, transparent);
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  will-change: transform, width, height;
+}
+
+/* Ring-only mode: when hovering over a no-flip zone we still draw the ring
+   but at radius 0 (so it's invisible), then the JS explicitly shows the
+   ring-only overlay for those zones. This class is toggled by App.jsx. */
+.reveal__ring--ring-only {
+  opacity: 1 !important;
+}
+
+/* On touch devices (phones/tablets) there's no hover, and cloning the whole
+   page is wasteful — drop the spotlight entirely. The site falls back to a
+   single theme (the visitor's OS theme) with the ☀/☾ toggle still working. */
+@media (hover: none), (pointer: coarse), (max-width: 900px) {
+  .reveal,
+  .reveal__ring {
+    display: none;
+  }
+}
