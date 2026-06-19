@@ -16,7 +16,7 @@ export function Hero() {
   return (
     <section className="hero" id="top">
       <div className="hero__copy">
-        <span className="eyebrow"><span className="eyebrow__dot" /> Your pharmacy, in one app</span>
+        <span className="eyebrow">Your pharmacy, in one app</span>
         <h1 className="hero__title">
           Where <span className="grad">is</span> my
           <br /> medicine?
@@ -28,7 +28,7 @@ export function Hero() {
         <div className="hero__cta">
           <DownloadButton label="Download for Android" />
           <a href="#demo" className="btn btn--ghost btn--lg">
-            <Icon name="arrow" size={18} /> Try the live demo
+            <Icon name="arrow" size={18} /> Take the tour
           </a>
         </div>
         <div className="hero__meta">
