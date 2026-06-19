@@ -126,7 +126,7 @@ async def download():
     filename = f"where-is-my-medicine-v{APK_VERSION}.apk"
 
     async def _stream():
-        async with httpx.AsyncClient(follow_redirects=True, timeout=120) as client:
+        async with httpx.AsyncClient(follow_redirects=True, timeout=300) as client:
             async with client.stream("GET", APK_URL) as resp:
                 resp.raise_for_status()
                 async for chunk in resp.aiter_bytes(chunk_size=65536):
