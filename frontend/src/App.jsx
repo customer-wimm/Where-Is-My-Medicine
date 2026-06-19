@@ -26,9 +26,41 @@ function Page({ theme, dark, onToggleTheme }) {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Scroll-reveal: once a .reveal-up element is 15% visible, add .is-visible
+// which triggers the CSS fade-up transition. Runs once per mount, disconnects
+// after each element is revealed so it stays cheap.
+// ---------------------------------------------------------------------------
+function useScrollReveal() {
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") {
+      // Very old browsers: just show everything.
+      document.querySelectorAll(".reveal-up").forEach((el) => el.classList.add("is-visible"));
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
+    );
+
+    document.querySelectorAll(".reveal-up").forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+}
+
 const RADIUS = 90;
 
 export default function App() {
+  useScrollReveal();
+
   // Base theme follows the visitor's OS preference; the spotlight shows the
   // opposite. A manual toggle flips both.
   const [dark, setDark] = useState(
