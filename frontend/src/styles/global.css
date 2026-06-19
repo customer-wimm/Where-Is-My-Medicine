@@ -1639,3 +1639,329 @@ a {
 .footer__email-tld {
   opacity: 0.65;
 }
+
+/* ================================================================= WHY US */
+/*
+  The section is tall (100vh + N×50vh) so the browser can scroll through it
+  while the inner .whyus__sticky stays position:sticky at the top.
+  JS reads scroll progress and maps it to the active step index.
+*/
+.whyus {
+  position: relative;
+  /* 100vh for the initial view + 50vh per extra step after the first */
+  height: calc(100vh + var(--steps, 5) * 50vh);
+  /* Do NOT use min-height here — we need exact height for scroll math */
+}
+
+.whyus__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 80px 260px;
+  align-items: center;
+  gap: 0 32px;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 80px 24px;
+  overflow: hidden;
+}
+
+/* ---- left panel ---- */
+.whyus__left {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.whyus__eyebrow {
+  margin-bottom: 20px;
+}
+.whyus__title {
+  font-size: clamp(30px, 4vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  font-weight: 800;
+  margin-bottom: 36px;
+}
+
+/* animated content block — fades in fresh per step */
+.whyus__content {
+  animation: content-enter 0.45s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+@keyframes content-enter {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.whyus__tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand);
+  background: color-mix(in srgb, var(--brand) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand) 28%, transparent);
+  padding: 5px 12px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+.whyus__point-title {
+  font-size: clamp(20px, 2.4vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+.whyus__point-body {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-soft);
+  max-width: 44ch;
+}
+.whyus__stat {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 28px;
+  padding: 18px 22px;
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--brand) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand) 20%, transparent);
+  width: fit-content;
+}
+.whyus__stat-num {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(120deg, var(--brand), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.whyus__stat-label {
+  font-size: 13px;
+  color: var(--text-soft);
+  font-weight: 500;
+}
+.whyus__counter {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 32px;
+  font-size: 13px;
+  color: var(--text-soft);
+}
+.whyus__counter-cur {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--brand);
+}
+.whyus__counter-sep {
+  opacity: 0.4;
+}
+
+/* ---- centre: pill track ---- */
+.whyus__track-wrap {
+  position: relative;
+  height: 320px;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+.whyus__track-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  transform: translateX(-50%);
+  background: color-mix(in srgb, var(--brand) 18%, transparent);
+  border-radius: 2px;
+}
+.whyus__track-fill {
+  width: 100%;
+  background: linear-gradient(to bottom, var(--brand), var(--accent));
+  border-radius: 2px;
+  transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* step dots on the track */
+.whyus__dot {
+  position: absolute;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--brand) 40%, transparent);
+  background: var(--bg);
+  transform: translate(-50%, -50%);
+  transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+  z-index: 2;
+}
+.whyus__dot.is-done {
+  background: var(--brand);
+  border-color: var(--brand);
+}
+.whyus__dot.is-active {
+  opacity: 0; /* hidden — the pill sits here instead */
+}
+
+/* THE MEDICINE CAPSULE — slides along the track */
+.whyus__pill {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  width: 36px;
+  transition: top 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Capsule shape: two halves, top green + bot white/mint */
+.whyus__capsule {
+  width: 22px;
+  height: 52px;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  box-shadow:
+    0 0 18px color-mix(in srgb, var(--accent) 60%, transparent),
+    0 0 40px color-mix(in srgb, var(--brand) 35%, transparent),
+    inset 0 2px 4px rgba(255,255,255,0.3);
+}
+.whyus__capsule-top {
+  height: 50%;
+  background: linear-gradient(160deg, var(--accent), var(--brand));
+}
+.whyus__capsule-bot {
+  height: 50%;
+  background: linear-gradient(160deg, #eafff4, var(--mint));
+}
+.theme-dark .whyus__capsule-bot {
+  background: linear-gradient(160deg, var(--mint), color-mix(in srgb, var(--mint) 55%, #fff));
+}
+
+/* glow rings that pulse around the capsule */
+.whyus__pill-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 48px;
+  height: 72px;
+  border-radius: 999px;
+  border: 1.5px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  transform: translate(-50%, -50%);
+  animation: capsule-pulse 2.2s ease-out infinite;
+  z-index: 1;
+}
+.whyus__pill-ring--2 {
+  width: 64px;
+  height: 90px;
+  border-color: color-mix(in srgb, var(--brand) 35%, transparent);
+  animation-delay: 0.55s;
+}
+@keyframes capsule-pulse {
+  0%   { opacity: 0.9; transform: translate(-50%, -50%) scale(0.85); }
+  100% { opacity: 0;   transform: translate(-50%, -50%) scale(1.5); }
+}
+
+/* ---- right: step list ---- */
+.whyus__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  justify-content: space-between;
+  height: 320px;
+}
+.whyus__item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 14px;
+  border-left: 2px solid transparent;
+  border-radius: 0 10px 10px 0;
+  transition: border-color 0.3s ease, background 0.3s ease, opacity 0.3s ease;
+  opacity: 0.35;
+  cursor: default;
+}
+.whyus__item.is-done {
+  opacity: 0.55;
+  border-left-color: color-mix(in srgb, var(--brand) 40%, transparent);
+}
+.whyus__item.is-active {
+  opacity: 1;
+  border-left-color: var(--brand);
+  background: color-mix(in srgb, var(--brand) 7%, transparent);
+}
+.whyus__item-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--brand);
+  letter-spacing: 0.06em;
+}
+.whyus__item-title {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text);
+}
+
+/* ---- responsive ---- */
+@media (max-width: 940px) {
+  .whyus {
+    height: auto;
+    min-height: unset;
+  }
+  .whyus__sticky {
+    position: relative;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding: 64px 24px;
+  }
+  .whyus__track-wrap,
+  .whyus__list {
+    display: none;
+  }
+  /* On mobile: show all points as stacked cards instead */
+  .whyus__left {
+    gap: 0;
+  }
+  .whyus__content {
+    animation: none;
+  }
+  .whyus__counter {
+    display: none;
+  }
+  /* Render all points manually via a static list on mobile */
+  .whyus__mobile-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 32px;
+  }
+  .whyus__mobile-card {
+    padding: 22px;
+    border-radius: var(--r-md);
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .whyus__mobile-card h4 {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 8px 0 6px;
+  }
+  .whyus__mobile-card p {
+    font-size: 14px;
+    color: var(--text-soft);
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 760px) {
+  .whyus__sticky {
+    padding: 48px 18px;
+  }
+}
