@@ -17,9 +17,10 @@ import os
 from datetime import datetime, timezone
 from pathlib import Path
 
+import httpx
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr, Field
 
@@ -36,7 +37,8 @@ APP_NAME = "WHERE IS MY MEDICINE"
 APK_VERSION = os.environ.get("WIMM_APK_VERSION", "2.0")
 # When the APK isn't bundled on the server (e.g. it's too big to commit), set
 # WIMM_APK_URL to a hosted copy — a GitHub Release asset works well — and the
-# download endpoint will redirect there instead.
+# download endpoint will stream the bytes through our own server so mobile
+# browsers always get a proper "Save file" prompt instead of opening GitHub.
 APK_URL = os.environ.get("WIMM_APK_URL", "")
 
 app = FastAPI(title=f"{APP_NAME} — Website API", version="1.0.0")
@@ -106,18 +108,44 @@ def stats():
 
 
 @app.get("/api/download")
-def download():
-    # Prefer the bundled APK; fall back to a hosted URL; otherwise 404.
+async def download():
+    """
+    Serve the APK with Content-Disposition: attachment so mobile browsers
+    always trigger a 'Save file' prompt rather than opening GitHub or
+    attempting to render the binary in the browser.
+
+    Priority:
+      1. Bundled APK on disk  → FileResponse (same-origin, headers fully controlled)
+      2. Remote URL (GitHub)  → stream bytes through us so Content-Disposition
+                                 is preserved and the download= attribute works
+      3. Neither              → 404
+    """
     if APK_FILE.exists():
         _bump_downloads()
         return FileResponse(
             APK_FILE,
             media_type="application/vnd.android.package-archive",
             filename=f"where-is-my-medicine-v{APK_VERSION}.apk",
+            headers={"Content-Disposition": f'attachment; filename="where-is-my-medicine-v{APK_VERSION}.apk"'},
         )
+
     if APK_URL:
         _bump_downloads()
-        return RedirectResponse(APK_URL, status_code=307)
+        filename = f"where-is-my-medicine-v{APK_VERSION}.apk"
+
+        async def _stream():
+            async with httpx.AsyncClient(follow_redirects=True, timeout=60) as client:
+                async with client.stream("GET", APK_URL) as resp:
+                    resp.raise_for_status()
+                    async for chunk in resp.aiter_bytes(chunk_size=65536):
+                        yield chunk
+
+        return StreamingResponse(
+            _stream(),
+            media_type="application/vnd.android.package-archive",
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        )
+
     raise HTTPException(status_code=404, detail="APK not found on server.")
 
 
