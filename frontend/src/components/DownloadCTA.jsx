@@ -23,27 +23,27 @@ export function DownloadCTA() {
 
   return (
     <section className="section download" id="download">
-      <div className="download__card">
+      <div className="download__card reveal-up">
         <div className="download__left">
-          <span className="eyebrow eyebrow--light"><span className="eyebrow__dot" /> Get started</span>
+          <span className="eyebrow eyebrow--light">Get started</span>
           <h2>Carry your pharmacy in your pocket.</h2>
-          <p>Download the Android APK and you’re ready in under a minute.</p>
+          <p>Download the Android APK and you're ready in under a minute.</p>
           <div className="download__cta">
             <DownloadButton label="Download APK" />
             <span className="download__os"><Icon name="android" size={18} /> Android 8.0+</span>
           </div>
           <ul className="download__steps">
             <li><Icon name="check" size={16} /> Tap download, open the file</li>
-            <li><Icon name="check" size={16} /> Allow “install from this source”</li>
+            <li><Icon name="check" size={16} /> Allow "install from this source"</li>
             <li><Icon name="check" size={16} /> Open the app and sign in</li>
           </ul>
         </div>
 
         <div className="download__right">
           <h3>Are you a pharmacy or doctor?</h3>
-          <p className="download__note">Tell us a bit about you and we’ll get you onboarded.</p>
+          <p className="download__note">Tell us a bit about you and we'll get you onboarded.</p>
           {state === "done" ? (
-            <div className="form__done"><Icon name="check" size={20} /> Thanks! We’ll be in touch.</div>
+            <div className="form__done"><Icon name="check" size={20} /> Thanks! We'll be in touch.</div>
           ) : (
             <form className="form" onSubmit={submit}>
               <input
@@ -60,12 +60,12 @@ export function DownloadCTA() {
                 value={form.role}
                 onChange={(e) => setForm({ ...form, role: e.target.value })}
               >
-                <option value="customer">I’m a customer</option>
-                <option value="pharmacy">I’m a pharmacy</option>
-                <option value="doctor">I’m a doctor</option>
+                <option value="customer">I'm a customer</option>
+                <option value="pharmacy">I'm a pharmacy</option>
+                <option value="doctor">I'm a doctor</option>
               </select>
               <textarea
-                rows={3} placeholder="Anything you’d like us to know? (optional)"
+                rows={3} placeholder="Anything you'd like us to know? (optional)"
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
               />
