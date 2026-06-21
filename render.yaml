@@ -1,0 +1,21 @@
+# Render Blueprint — deploy the whole site (React build + FastAPI) as one
+# Docker web service. In Render: New > Blueprint, point it at this repo.
+services:
+  - type: web
+    name: wimm-website
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      # Direct link to the APK hosted on GitHub Releases.
+      - key: WIMM_APK_URL
+        value: "https://github.com/customer-wimm/Where-Is-My-Medicine/releases/download/v1.0/WhereIsMyMedicine.apk"
+      - key: WIMM_APK_VERSION
+        value: "1.0"
+      # URL of the Admin/Super-Admin API (the wimm-admin-api service from the
+      # other repo) — lets this site fetch the poster Super Admin publishes.
+      # Leave unset to simply not show a poster. Baked in at build time.
+      - key: VITE_ADMIN_API_URL
+        sync: false
