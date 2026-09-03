@@ -1,15 +1,39 @@
+import { useState } from "react";
+
 // Recognitions, incubators, institutional partners & media — each links out
 // to the organisation's official website (opens in a new tab).
+// `label` is a graceful fallback shown inside the chip if the logo image is
+// missing, so the footer never renders a broken-image icon.
 const PARTNERS = [
-  { name: "DPIIT — Startup India", src: "/dpiit.png", href: "https://www.startupindia.gov.in" },
-  { name: "NITI Aayog", src: "/partners/niti-aayog.png", href: "https://www.niti.gov.in" },
-  { name: "CSIR — Council of Scientific & Industrial Research", src: "/partners/csir.png", href: "https://www.csir.res.in" },
-  { name: "MSME — Micro, Small & Medium Enterprises", src: "/partners/msme.png", href: "https://msme.gov.in" },
-  { name: "AIC Techno — Atal Incubation Centre", src: "/partners/aic-techno.png", href: "https://www.aic-techno.com" },
-  { name: "GNIPST — Guru Nanak Institute of Pharmaceutical Science & Technology", src: "/partners/gnipst.png", href: "https://www.gnipst.ac.in" },
-  { name: "Calcutta Institute of Pharmaceutical Technology & Allied Health Sciences", src: "/partners/ciptahs.png", href: "https://www.ciptulb.in" },
-  { name: "Bangla Hunt", src: "/partners/bangla-hunt.png", href: "https://banglahunt.in" },
+  { name: "DPIIT — Startup India", label: "DPIIT", src: "/dpiit.png", href: "https://www.startupindia.gov.in" },
+  { name: "NITI Aayog", label: "NITI Aayog", src: "/partners/niti-aayog.png", href: "https://www.niti.gov.in" },
+  { name: "CSIR — Council of Scientific & Industrial Research", label: "CSIR", src: "/partners/csir.png", href: "https://www.csir.res.in" },
+  { name: "MSME — Micro, Small & Medium Enterprises", label: "MSME", src: "/partners/msme.png", href: "https://msme.gov.in" },
+  { name: "AIC Techno — Atal Incubation Centre", label: "AIC Techno", src: "/partners/aic-techno.png", href: "https://www.aic-techno.com" },
+  { name: "GNIPST — Guru Nanak Institute of Pharmaceutical Science & Technology", label: "GNIPST", src: "/partners/gnipst.png", href: "https://www.gnipst.ac.in" },
+  { name: "Calcutta Institute of Pharmaceutical Technology & Allied Health Sciences", label: "CIPTAHS", src: "/partners/ciptahs.png", href: "https://www.ciptulb.in" },
+  { name: "Bangla Hunt", label: "Bangla Hunt", src: "/partners/bangla-hunt.png", href: "https://banglahunt.in" },
 ];
+
+function PartnerBadge({ name, label, src, href }) {
+  const [failed, setFailed] = useState(false);
+  return (
+    <a
+      className="footer__badge"
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={name}
+      aria-label={name}
+    >
+      {failed ? (
+        <span className="footer__badge-text">{label}</span>
+      ) : (
+        <img src={src} alt={name} loading="lazy" onError={() => setFailed(true)} />
+      )}
+    </a>
+  );
+}
 
 export function Footer() {
   return (
@@ -31,17 +55,7 @@ export function Footer() {
         <span className="footer__trust-label">Backed &amp; supported by</span>
         <div className="footer__trust-badges">
           {PARTNERS.map((p) => (
-            <a
-              key={p.name}
-              className="footer__badge"
-              href={p.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={p.name}
-              aria-label={p.name}
-            >
-              <img src={p.src} alt={p.name} loading="lazy" />
-            </a>
+            <PartnerBadge key={p.name} {...p} />
           ))}
         </div>
       </div>

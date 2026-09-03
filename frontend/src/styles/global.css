@@ -1501,6 +1501,20 @@ a {
   object-fit: contain;
   display: block;
 }
+/* Fallback shown when a logo image is missing — keeps the chip looking
+   intentional instead of rendering a broken-image icon. */
+.footer__badge-text {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  letter-spacing: -0.01em;
+  color: #0e1a0e;
+  background: linear-gradient(120deg, #15803d, #22c55e);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 .theme-dark .footer__badge {
   border-color: rgba(255, 255, 255, 0.14);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
