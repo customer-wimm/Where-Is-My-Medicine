@@ -16,7 +16,7 @@ const PARTNERS = [
   { name: "NITI Aayog", label: "NITI Aayog", src: "/partners/niti-aayog.png", href: "https://www.niti.gov.in" },
 ];
 
-function PartnerBadge({ name, label, src, href }) {
+function PartnerBadge({ name, label, src, href, ariaHidden }) {
   const [failed, setFailed] = useState(false);
   return (
     <a
@@ -26,11 +26,13 @@ function PartnerBadge({ name, label, src, href }) {
       rel="noopener noreferrer"
       title={name}
       aria-label={name}
+      aria-hidden={ariaHidden || undefined}
+      tabIndex={ariaHidden ? -1 : undefined}
     >
       {failed ? (
         <span className="footer__badge-text">{label}</span>
       ) : (
-        <img src={src} alt={name} loading="lazy" onError={() => setFailed(true)} />
+        <img src={src} alt={ariaHidden ? "" : name} loading="lazy" onError={() => setFailed(true)} />
       )}
     </a>
   );
@@ -83,13 +85,19 @@ export function Footer() {
         </div>
       </div>
 
-      {/* ── Recognitions & partners ── */}
+      {/* ── Recognitions & partners (auto-scrolling, pauses on hover) ── */}
       <div className="footer__trust">
         <span className="footer__trust-label">Backed &amp; supported by</span>
-        <div className="footer__trust-badges">
-          {PARTNERS.map((p) => (
-            <PartnerBadge key={p.name} {...p} />
-          ))}
+        <div className="footer__marquee">
+          <div className="footer__marquee-track">
+            {PARTNERS.map((p) => (
+              <PartnerBadge key={p.name} {...p} />
+            ))}
+            {/* duplicate set makes the scroll loop seamless */}
+            {PARTNERS.map((p) => (
+              <PartnerBadge key={p.name + "-dup"} {...p} ariaHidden />
+            ))}
+          </div>
         </div>
       </div>
 

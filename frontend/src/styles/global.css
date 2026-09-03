@@ -1514,13 +1514,50 @@ a {
   text-align: center;
   white-space: nowrap;
 }
-.footer__trust-badges {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
+/* auto-scrolling marquee of partner logos; pauses when hovered */
+.footer__marquee {
   width: 100%;
+  overflow: hidden;
+  /* fade the logos in/out at both edges */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.footer__marquee-track {
+  display: flex;
+  flex-wrap: nowrap;
+  width: max-content;
+  align-items: center;
+  animation: footer-marquee 34s linear infinite;
+  will-change: transform;
+}
+.footer__marquee:hover .footer__marquee-track,
+.footer__marquee:focus-within .footer__marquee-track {
+  animation-play-state: paused;
+}
+/* uniform spacing via margin (not gap) so the -50% loop is seamless */
+.footer__marquee-track .footer__badge {
+  margin-right: 16px;
+  flex: 0 0 auto;
+}
+@keyframes footer-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .footer__marquee {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .footer__marquee-track {
+    animation: none;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+    gap: 14px;
+  }
+  .footer__marquee-track .footer__badge {
+    margin-right: 0;
+  }
 }
 /* Each logo sits on a neutral white chip so the many different logo
    backgrounds (white, cream, dark, coloured) read as one consistent
