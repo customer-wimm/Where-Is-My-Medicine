@@ -1527,11 +1527,12 @@ a {
   flex-wrap: nowrap;
   width: max-content;
   align-items: center;
-  animation: footer-marquee 34s linear infinite;
+  animation: footer-marquee 24s linear infinite;
   will-change: transform;
 }
-.footer__marquee:hover .footer__marquee-track,
-.footer__marquee:focus-within .footer__marquee-track {
+/* pause on hover only — using :focus-within would keep it paused after a
+   logo is clicked, because the opened link retains focus */
+.footer__marquee:hover .footer__marquee-track {
   animation-play-state: paused;
 }
 /* uniform spacing via margin (not gap) so the -50% loop is seamless */
