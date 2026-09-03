@@ -14,7 +14,7 @@ const DOCS = {
     sections: [
       {
         heading: "Information we collect",
-        body: "Account details you provide (name, phone number, email, delivery address); medicine and prescription information you add to place orders or set reminders; order and delivery history; questions you ask WIMM.ai; and basic device and usage data that helps the app run reliably.",
+        body: "Account details you provide (name, phone number, delivery address); medicine and prescription information you add to place orders or set reminders; order and delivery history; questions you ask WIMM.ai; and basic device and usage data that helps the app run reliably.",
       },
       {
         heading: "How we use your information",
@@ -22,7 +22,7 @@ const DOCS = {
       },
       {
         heading: "How we share information",
-        body: "We share only what is needed to serve you — for example, order details with the pharmacy fulfilling it and address details with the delivery partner. We use trusted service providers under confidentiality obligations. We do not sell your personal or health information.",
+        body: "We share only what is needed to serve you — for example, order details with the pharmacy fulfilling it and address details with the delivery partner. We also give pharmacies aggregated, area-level insight into which medicines are in demand, so they can manage their stock and keep essential medicines available. We use trusted service providers under confidentiality obligations, and we do not sell your personal or health information.",
       },
       {
         heading: "Data security",
