@@ -2181,3 +2181,107 @@ a {
 @media (prefers-reduced-motion: reduce) {
   .poster-overlay { animation: none; }
 }
+
+/* ============================================================================
+   Image carousel — populated from the Super-Admin "Website Carousel" page and
+   shown just below the live demo. Auto-scrolls with prev/next arrows + dots.
+   ========================================================================== */
+.carousel__stage {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.carousel__viewport {
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  box-shadow: var(--shadow);
+}
+.carousel__track {
+  display: flex;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+.carousel__slide {
+  position: relative;
+  flex: 0 0 100%;
+  width: 100%;
+}
+.carousel__slide a {
+  display: block;
+}
+.carousel__img {
+  display: block;
+  width: 100%;
+  height: clamp(240px, 46vw, 520px);
+  object-fit: cover;
+  user-select: none;
+}
+.carousel__caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 34px 22px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.62), transparent);
+}
+.carousel__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  backdrop-filter: blur(6px);
+  color: var(--text);
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+.carousel__arrow:hover {
+  transform: translateY(-50%) scale(1.08);
+  border-color: color-mix(in srgb, var(--brand) 50%, transparent);
+  color: var(--brand);
+}
+.carousel__arrow--prev { left: 14px; }
+.carousel__arrow--next { right: 14px; }
+.carousel__arrow-flip { display: grid; place-items: center; transform: rotate(180deg); }
+.carousel__dots {
+  display: flex;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 20px;
+}
+.carousel__dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border-radius: 50%;
+  border: none;
+  background: color-mix(in srgb, var(--text) 24%, transparent);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.carousel__dot:hover { background: color-mix(in srgb, var(--text) 42%, transparent); }
+.carousel__dot.is-active {
+  background: linear-gradient(135deg, var(--brand), var(--accent));
+  transform: scale(1.25);
+}
+@media (max-width: 560px) {
+  .carousel__arrow { width: 38px; height: 38px; }
+  .carousel__arrow--prev { left: 8px; }
+  .carousel__arrow--next { right: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .carousel__track { transition: none; }
+}

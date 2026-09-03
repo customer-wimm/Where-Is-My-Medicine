@@ -5,6 +5,7 @@ import { HowItWorks } from "./components/HowItWorks.jsx";
 import { Features } from "./components/Features.jsx";
 import { WhyUs } from "./components/WhyUs.jsx";
 import { Demo } from "./components/Demo.jsx";
+import { Carousel } from "./components/Carousel.jsx";
 import { Footer } from "./components/Footer.jsx";
 import { BackToTop } from "./components/BackToTop.jsx";
 import { Poster } from "./components/Poster.jsx";
@@ -19,6 +20,7 @@ function Page({ theme, dark, onToggleTheme }) {
         <Features />
         <WhyUs />
         <Demo />
+        <Carousel />
       </main>
       <Footer />
     </div>
