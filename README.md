@@ -60,5 +60,6 @@ size — upload it to the host directly or wire it to your release storage.
 | Feature cards / steps | `frontend/src/data/features.js` |
 | In-phone app screens | `frontend/src/components/PhoneScreens.jsx` |
 | Demo tabs | `frontend/src/components/Demo.jsx` |
+| Image carousel (below the demo) | Managed from the Super-Admin **Website Carousel** page; fetched from `VITE_ADMIN_API_URL` via `frontend/src/components/Carousel.jsx` |
 | Colors / theme | `:root`, `.theme-light`, `.theme-dark` in `frontend/src/styles/global.css` |
 | Lens size | `RADIUS` in `frontend/src/App.jsx` |
