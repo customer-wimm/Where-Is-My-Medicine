@@ -14,6 +14,7 @@ export function Carousel() {
   const [images, setImages] = useState([]);
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [lightbox, setLightbox] = useState(null); // the image object being previewed, or null
   const timer = useRef(null);
 
   // Fetch the published images once on mount.
@@ -43,17 +44,30 @@ export function Carousel() {
   const prev = useCallback(() => go(index - 1), [go, index]);
   const next = useCallback(() => go(index + 1), [go, index]);
 
-  // Auto-scroll — advances while not paused and more than one image exists.
+  // Auto-scroll — advances while not paused, no preview open, and more than one image.
   useEffect(() => {
-    if (paused || count <= 1) return;
+    if (paused || lightbox || count <= 1) return;
     timer.current = setInterval(() => setIndex((i) => (i + 1) % count), AUTOPLAY_MS);
     return () => clearInterval(timer.current);
-  }, [paused, count]);
+  }, [paused, lightbox, count]);
 
   // Keep the index in range if the image list ever changes.
   useEffect(() => {
     if (index >= count && count > 0) setIndex(0);
   }, [count, index]);
+
+  // Lock background scroll + close the preview on Escape while it's open.
+  useEffect(() => {
+    if (!lightbox) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e) => { if (e.key === "Escape") setLightbox(null); };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [lightbox]);
 
   if (count === 0) return null;
 
@@ -81,33 +95,40 @@ export function Carousel() {
             className="carousel__track"
             style={{ transform: `translateX(-${index * 100}%)` }}
           >
-            {images.map((img, i) => {
-              const slide = (
-                <img
-                  className="carousel__img"
-                  src={img.imageUrl}
-                  alt={img.title || `Slide ${i + 1}`}
-                  loading={i === 0 ? "eager" : "lazy"}
-                  draggable="false"
-                />
-              );
-              return (
-                <div
-                  className="carousel__slide"
-                  key={img.id || i}
-                  aria-hidden={i !== index}
+            {images.map((img, i) => (
+              <div
+                className="carousel__slide"
+                key={img.id || i}
+                aria-hidden={i !== index}
+              >
+                <button
+                  type="button"
+                  className="carousel__frame"
+                  onClick={() => setLightbox(img)}
+                  tabIndex={i === index ? 0 : -1}
+                  aria-label={img.title ? `Preview: ${img.title}` : `Preview image ${i + 1}`}
                 >
-                  {img.linkUrl ? (
-                    <a href={img.linkUrl} target="_blank" rel="noopener noreferrer">
-                      {slide}
-                    </a>
-                  ) : (
-                    slide
-                  )}
-                  {img.title && <p className="carousel__caption">{img.title}</p>}
-                </div>
-              );
-            })}
+                  {/* Blurred, zoomed copy fills the frame so there are no bare
+                      letterbox bars — the sharp copy sits on top, un-cropped. */}
+                  <span
+                    className="carousel__bg"
+                    style={{ backgroundImage: `url("${img.imageUrl}")` }}
+                    aria-hidden="true"
+                  />
+                  <img
+                    className="carousel__img"
+                    src={img.imageUrl}
+                    alt={img.title || `Slide ${i + 1}`}
+                    loading={i === 0 ? "eager" : "lazy"}
+                    draggable="false"
+                  />
+                  <span className="carousel__zoom" aria-hidden="true">
+                    <Icon name="search" size={18} />
+                  </span>
+                </button>
+                {img.title && <p className="carousel__caption">{img.title}</p>}
+              </div>
+            ))}
           </div>
         </div>
 
@@ -146,6 +167,62 @@ export function Carousel() {
           </>
         )}
       </div>
+
+      {lightbox && (
+        <Lightbox image={lightbox} onClose={() => setLightbox(null)} />
+      )}
     </section>
+  );
+}
+
+// Full-screen preview. First click on a slide opens this; clicking the image
+// here opens its link (when one is set). Full-resolution, un-cropped.
+function Lightbox({ image, onClose }) {
+  const hasLink = !!image.linkUrl;
+
+  return (
+    <div
+      className="lightbox-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-label={image.title || "Image preview"}
+      onClick={onClose}
+    >
+      <button
+        type="button"
+        className="lightbox-close"
+        aria-label="Close preview"
+        onClick={onClose}
+      >
+        <Icon name="close" size={20} />
+      </button>
+
+      <figure className="lightbox-figure" onClick={(e) => e.stopPropagation()}>
+        {hasLink ? (
+          <a
+            href={image.linkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="lightbox-link"
+            title="Open link"
+          >
+            <img className="lightbox-img" src={image.imageUrl} alt={image.title || "Preview"} />
+          </a>
+        ) : (
+          <img className="lightbox-img" src={image.imageUrl} alt={image.title || "Preview"} />
+        )}
+
+        {(image.title || hasLink) && (
+          <figcaption className="lightbox-caption">
+            {image.title && <span>{image.title}</span>}
+            {hasLink && (
+              <span className="lightbox-hint">
+                <Icon name="arrow" size={14} /> Click the image to open the link
+              </span>
+            )}
+          </figcaption>
+        )}
+      </figure>
+    </div>
   );
 }

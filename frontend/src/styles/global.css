@@ -2209,15 +2209,58 @@ a {
   flex: 0 0 100%;
   width: 100%;
 }
-.carousel__slide a {
-  display: block;
-}
-.carousel__img {
+/* The clickable frame holds a blurred fill + the sharp, un-cropped image. */
+.carousel__frame {
+  position: relative;
   display: block;
   width: 100%;
   height: clamp(240px, 46vw, 520px);
-  object-fit: cover;
+  padding: 0;
+  border: none;
+  overflow: hidden;
+  cursor: zoom-in;
+  background: #0b120d;
+}
+/* Blurred, zoomed copy of the same image — fills the frame so there are no
+   empty letterbox bars behind portrait/odd-ratio images. */
+.carousel__bg {
+  position: absolute;
+  inset: -8%;
+  background-size: cover;
+  background-position: center;
+  filter: blur(22px) brightness(0.65);
+  transform: scale(1.1);
+}
+/* The real image: shown whole (never cropped, never upscaled past its size)
+   so there is no quality loss regardless of the source URL's dimensions. */
+.carousel__img {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   user-select: none;
+}
+.carousel__zoom {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.carousel__frame:hover .carousel__zoom,
+.carousel__frame:focus-visible .carousel__zoom {
+  opacity: 1;
+  transform: scale(1);
 }
 .carousel__caption {
   position: absolute;
@@ -2229,7 +2272,9 @@ a {
   font-size: 15px;
   font-weight: 600;
   color: #fff;
+  text-align: left;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.62), transparent);
+  pointer-events: none;
 }
 .carousel__arrow {
   position: absolute;
@@ -2284,4 +2329,85 @@ a {
 }
 @media (prefers-reduced-motion: reduce) {
   .carousel__track { transition: none; }
+}
+
+/* ---- Full-screen image preview (lightbox) ------------------------------- */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 40px 20px;
+  background: rgba(6, 12, 8, 0.86);
+  backdrop-filter: blur(8px);
+  animation: lightbox-in 0.2s ease;
+  cursor: zoom-out;
+}
+.lightbox-figure {
+  margin: 0;
+  max-width: min(1100px, 94vw);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  cursor: default;
+}
+.lightbox-link { display: block; line-height: 0; cursor: pointer; }
+.lightbox-img {
+  display: block;
+  max-width: 100%;
+  max-height: 78vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.8);
+}
+.lightbox-caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 18px;
+  color: #eaf3ea;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+.lightbox-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  font-size: 13px;
+  color: #bfe6cd;
+  background: color-mix(in srgb, var(--brand) 22%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand) 38%, transparent);
+  padding: 5px 12px;
+  border-radius: 999px;
+}
+.lightbox-close {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.lightbox-close:hover { background: rgba(255, 255, 255, 0.22); transform: scale(1.07); }
+@keyframes lightbox-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lightbox-overlay { animation: none; }
 }
