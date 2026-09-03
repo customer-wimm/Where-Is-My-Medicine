@@ -931,33 +931,85 @@ a {
   margin: 0 auto;
   padding: 36px 24px 16px;
 }
-.footer__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 18px;
-  padding-bottom: 24px;
+/* ---- main column grid ---- */
+.footer__main {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.4fr;
+  gap: 40px;
+  align-items: start;
+  padding: 8px 0 40px;
 }
-.footer__links {
+.footer__brand-col {
+  max-width: 360px;
+}
+.footer__brand-col .nav__brand {
+  margin-bottom: 16px;
+}
+.footer__tagline {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text-soft);
+  margin-bottom: 12px;
+}
+.footer__made {
+  font-size: 13px;
+  color: var(--text-soft);
+  opacity: 0.85;
+}
+.footer__col {
   display: flex;
-  gap: 26px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.footer__col-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.footer__col a,
+.footer__linkbtn {
   font-size: 15px;
   color: var(--text-soft);
+  text-align: left;
+  transition: color 0.15s ease;
 }
-.footer__links a:hover {
-  color: var(--text);
+.footer__col a:hover,
+.footer__linkbtn:hover {
+  color: var(--brand);
+}
+/* button that looks like a link (opens the legal modal) */
+.footer__linkbtn {
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+.footer__reply {
+  font-size: 13px;
+  color: var(--text-soft);
+  opacity: 0.85;
+  margin-top: 2px;
 }
 .footer__bottom {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   padding-top: 24px;
   border-top: 1px solid var(--border);
   font-size: 13px;
   color: var(--text-soft);
+}
+.footer__legal-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }
 .footer__dot {
   opacity: 0.5;
@@ -1105,13 +1157,9 @@ a {
   .hero__meta b {
     font-size: 19px;
   }
-  .footer__top,
   .footer__bottom {
     flex-direction: column;
     align-items: flex-start;
-  }
-  .footer__dot {
-    display: none;
   }
 }
 
@@ -1542,9 +1590,9 @@ a {
 }
 .footer__email {
   display: inline-block;
-  font-size: clamp(22px, 3.5vw, 38px);
+  font-size: clamp(17px, 2vw, 21px);
   font-weight: 800;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   /* Light theme (default): stay within readable greens — the previous
      gradient faded to white and vanished on the light background. */
   background: linear-gradient(120deg, #15803d 0%, #22c55e 55%, #16a34a 100%);
@@ -1575,6 +1623,122 @@ a {
   background: linear-gradient(120deg, #86efac, #ffffff);
   -webkit-background-clip: text;
   background-clip: text;
+}
+
+/* ---- footer column grid: collapse on smaller screens ---- */
+@media (max-width: 860px) {
+  .footer__main {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 24px;
+  }
+  .footer__brand-col {
+    grid-column: 1 / -1;
+    max-width: 560px;
+  }
+}
+@media (max-width: 480px) {
+  .footer__main {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
+/* ============================================================== legal modal */
+.legal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: rgba(4, 14, 8, 0.72);
+  backdrop-filter: blur(4px);
+  animation: poster-in 0.25s ease;
+}
+.legal-card {
+  width: min(640px, 100%);
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.legal-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 26px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.legal-card__title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.legal-card__updated {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-soft);
+}
+.legal-card__close {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.legal-card__close:hover {
+  transform: scale(1.06);
+  border-color: color-mix(in srgb, var(--brand) 50%, transparent);
+}
+.legal-card__body {
+  padding: 20px 26px 28px;
+  overflow-y: auto;
+}
+.legal-card__intro {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-soft);
+  margin-bottom: 20px;
+}
+.legal-card__section {
+  margin-bottom: 18px;
+}
+.legal-card__heading {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+.legal-card__text {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text-soft);
+}
+.legal-card__contact {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  font-size: 14px;
+  color: var(--text-soft);
+}
+.legal-card__contact a {
+  color: var(--brand);
+  font-weight: 600;
+}
+.legal-card__contact a:hover {
+  text-decoration: underline;
 }
 
 /* ================================================================= WHY US */

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { LegalModal } from "./LegalModal.jsx";
 
 // Recognitions, incubators, institutional partners & media — each links out
 // to the organisation's official website (opens in a new tab).
@@ -36,18 +37,50 @@ function PartnerBadge({ name, label, src, href }) {
 }
 
 export function Footer() {
+  const [legal, setLegal] = useState(null); // "privacy" | "terms" | null
+  const year = new Date().getFullYear();
+
   return (
     <footer className="footer">
-      <div className="footer__top">
-        <a className="nav__brand" href="#top">
-          <img className="nav__logo-img" src="/logo.png" alt="" width={34} height={34} />
-          <span>WHERE IS MY <b>MEDICINE</b></span>
-        </a>
-        <nav className="footer__links">
+      {/* ── Main columns ── */}
+      <div className="footer__main">
+        <div className="footer__brand-col">
+          <a className="nav__brand" href="#top">
+            <img className="nav__logo-img" src="/logo.png" alt="" width={34} height={34} />
+            <span>WHERE IS MY <b>MEDICINE</b></span>
+          </a>
+          <p className="footer__tagline">
+            Your medicine, found. Order from verified pharmacies, set reminders,
+            track delivery and get safe answers from WIMM.ai — all in one app.
+          </p>
+          <p className="footer__made">Made for patients, pharmacies &amp; doctors.</p>
+        </div>
+
+        <nav className="footer__col" aria-label="Explore">
+          <h4 className="footer__col-title">Explore</h4>
           <a href="#how">How it works</a>
           <a href="#features">Features</a>
           <a href="#demo">Tour</a>
         </nav>
+
+        <nav className="footer__col" aria-label="Legal">
+          <h4 className="footer__col-title">Legal</h4>
+          <button type="button" className="footer__linkbtn" onClick={() => setLegal("privacy")}>
+            Privacy Policy
+          </button>
+          <button type="button" className="footer__linkbtn" onClick={() => setLegal("terms")}>
+            Terms of Service
+          </button>
+        </nav>
+
+        <div className="footer__col">
+          <h4 className="footer__col-title">Get in touch</h4>
+          <a href="mailto:connect@whereismymedicine.com" className="footer__email">
+            connect@whereismymedicine
+            <span className="footer__email-tld">.com</span>
+          </a>
+          <p className="footer__reply">We usually reply within a day.</p>
+        </div>
       </div>
 
       {/* ── Recognitions & partners ── */}
@@ -60,20 +93,21 @@ export function Footer() {
         </div>
       </div>
 
-      {/* ── Contact email ── */}
-      <div className="footer__contact">
-        <p className="footer__contact-label">Get in touch</p>
-        <a href="mailto:connect@whereismymedicine.com" className="footer__email">
-          connect@whereismymedicine
-          <span className="footer__email-tld">.com</span>
-        </a>
+      {/* ── Bottom bar ── */}
+      <div className="footer__bottom">
+        <span>Made with ❤️ WHERE IS MY MEDICINE © {year}</span>
+        <span className="footer__legal-links">
+          <button type="button" className="footer__linkbtn" onClick={() => setLegal("privacy")}>
+            Privacy
+          </button>
+          <span className="footer__dot">•</span>
+          <button type="button" className="footer__linkbtn" onClick={() => setLegal("terms")}>
+            Terms
+          </button>
+        </span>
       </div>
 
-      <div className="footer__bottom">
-        <span>Made with ❤️ WHERE IS MY MEDICINE © {new Date().getFullYear()}</span>
-        <span className="footer__dot">•</span>
-        <span>Made for patients, pharmacies &amp; doctors.</span>
-      </div>
+      <LegalModal doc={legal} onClose={() => setLegal(null)} />
     </footer>
   );
 }
