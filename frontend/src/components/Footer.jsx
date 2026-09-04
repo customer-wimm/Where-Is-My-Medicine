@@ -8,7 +8,7 @@ import { LegalModal } from "./LegalModal.jsx";
 const PARTNERS = [
   { name: "DPIIT — Startup India", label: "DPIIT", src: "/dpiit.png", href: "https://www.startupindia.gov.in" },
   { name: "AIC Techno — Atal Incubation Centre", label: "AIC Techno", src: "/partners/aic-techno.png", href: "https://www.aic-techno.com" },
-  { name: "Bangla Hunt", label: "Bangla Hunt", src: "/partners/bangla-hunt.png", href: "https://banglahunt.in" },
+  { name: "Bangla Hunt", label: "Bangla Hunt", src: "/partners/bangla-hunt.png", href: "https://banglahunt.com" },
   { name: "MSME — Micro, Small & Medium Enterprises", label: "MSME", src: "/partners/msme.png", href: "https://msme.gov.in" },
   { name: "CSIR — Council of Scientific & Industrial Research", label: "CSIR", src: "/partners/csir.png", href: "https://www.csir.res.in" },
   { name: "Calcutta Institute of Pharmaceutical Technology & Allied Health Sciences", label: "CIPTAHS", src: "/partners/ciptahs.png", href: "https://www.ciptulb.in" },
