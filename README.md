@@ -49,9 +49,23 @@ dashboard) and run `uvicorn main:app --host 0.0.0.0 --port $PORT`.
 
 ## The APK
 
-Lives at `backend/downloads/where-is-my-medicine.apk`. Replace that file to ship
-a new build (optionally set `WIMM_APK_VERSION`). It's git-ignored because of its
-size — upload it to the host directly or wire it to your release storage.
+The app is hosted on **GitHub Releases**, not in this repo. The backend
+(`/api/download`) 302-redirects to `WIMM_APK_URL`, which points at the permanent
+"latest" asset link:
+
+```
+https://github.com/customer-wimm/Where-Is-My-Medicine/releases/latest/download/wimm.apk
+```
+
+To ship a new build:
+
+1. Rename the APK to exactly **`wimm.apk`** (lowercase, no spaces).
+2. Draft a new release with a fresh tag (`v2.0`, `v2.1`, …) and attach `wimm.apk`.
+3. Publish it. The `latest/download/wimm.apk` link auto-resolves to the newest
+   release, so `WIMM_APK_URL` never needs to change.
+4. Bump `WIMM_APK_VERSION` if you want the version label updated.
+
+The repo must stay **public** for this link to be downloadable without auth.
 
 ## Where to customise
 
