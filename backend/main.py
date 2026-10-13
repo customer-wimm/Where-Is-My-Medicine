@@ -10,8 +10,10 @@ A small FastAPI app that:
 Run dev:  uvicorn main:app --reload --port 8000
 
 APK hosting:
-  Set WIMM_APK_URL to the GitHub Release asset URL:
-  https://github.com/customer-wimm/Where-Is-My-Medicine/releases/download/v1.0/WhereIsMyMedicine.apk
+  Set WIMM_APK_URL to the GitHub Release asset URL. Use the permanent "latest"
+  link so the site never needs updating when a new version ships — just publish
+  a new release whose APK asset is named exactly "wimm.apk":
+  https://github.com/customer-wimm/Where-Is-My-Medicine/releases/latest/download/wimm.apk
   The browser is redirected there directly so GitHub handles auth and delivery.
 """
 
@@ -36,11 +38,13 @@ STATS_FILE = DATA_DIR / "stats.json"
 LEADS_FILE = DATA_DIR / "leads.json"
 
 APP_NAME = "WHERE IS MY MEDICINE"
-APK_VERSION = os.environ.get("WIMM_APK_VERSION", "1.0")
+APK_VERSION = os.environ.get("WIMM_APK_VERSION", "2.0")
 # GitHub Release asset URL — set this env var on Render.
+# Permanent "latest" link: every release must attach an APK asset named exactly
+# "wimm.apk" so this URL always resolves to the newest build without changes here.
 APK_URL = os.environ.get(
     "WIMM_APK_URL",
-    "https://github.com/customer-wimm/Where-Is-My-Medicine/releases/download/v1.0/WhereIsMyMedicine.apk",
+    "https://github.com/customer-wimm/Where-Is-My-Medicine/releases/latest/download/wimm.apk",
 )
 
 app = FastAPI(title=f"{APP_NAME} — Website API", version="1.0.0")
