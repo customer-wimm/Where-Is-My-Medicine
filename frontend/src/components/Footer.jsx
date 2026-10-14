@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { LegalModal } from "./LegalModal.jsx";
 
 // Recognitions, incubators, institutional partners & media — each links out
 // to the organisation's official website (opens in a new tab).
@@ -39,7 +38,6 @@ function PartnerBadge({ name, label, src, href, ariaHidden }) {
 }
 
 export function Footer() {
-  const [legal, setLegal] = useState(null); // "privacy" | "terms" | null
   const year = new Date().getFullYear();
 
   return (
@@ -67,12 +65,12 @@ export function Footer() {
 
         <nav className="footer__col" aria-label="Legal">
           <h4 className="footer__col-title">Legal</h4>
-          <button type="button" className="footer__linkbtn" onClick={() => setLegal("privacy")}>
+          <a href="/privacy/" target="_blank" rel="noopener noreferrer">
             Privacy Policy
-          </button>
-          <button type="button" className="footer__linkbtn" onClick={() => setLegal("terms")}>
+          </a>
+          <a href="/terms/" target="_blank" rel="noopener noreferrer">
             Terms of Service
-          </button>
+          </a>
         </nav>
 
         <div className="footer__col">
@@ -105,17 +103,15 @@ export function Footer() {
       <div className="footer__bottom">
         <span>Made with ❤️ WHERE IS MY MEDICINE © {year}</span>
         <span className="footer__legal-links">
-          <button type="button" className="footer__linkbtn" onClick={() => setLegal("privacy")}>
+          <a href="/privacy/" target="_blank" rel="noopener noreferrer">
             Privacy
-          </button>
+          </a>
           <span className="footer__dot">•</span>
-          <button type="button" className="footer__linkbtn" onClick={() => setLegal("terms")}>
+          <a href="/terms/" target="_blank" rel="noopener noreferrer">
             Terms
-          </button>
+          </a>
         </span>
       </div>
-
-      <LegalModal doc={legal} onClose={() => setLegal(null)} />
     </footer>
   );
 }
