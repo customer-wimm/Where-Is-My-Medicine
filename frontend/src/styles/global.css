@@ -5,11 +5,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap");
 
 :root {
-  /* Brand greens — constant across light & dark (match the app). */
-  --brand: #00a152;
-  --brand-deep: #006400;
-  --mint: #6fe7a8;
-  --accent: #4ae888;
+  /* Premium emerald brand — constant across light & dark. */
+  --brand: #0f9d55;
+  --brand-deep: #0b7a42;
+  --mint: #22c58a;
+  --accent: #2ad38f;
 
   --r-sm: 12px;
   --r-md: 18px;
@@ -24,44 +24,46 @@
 
 /* ---- Light theme tokens ---- */
 .theme-light {
-  --bg: #eafbf1;
-  --bg-2: #f4faf5;
-  --bg-3: #e2f5ea;
+  /* Premium: mostly white / soft-neutral surfaces. Green = brand + actions. */
+  --bg: #ffffff;
+  --bg-2: #f7f9f8;
+  --bg-3: #f1f8f3;
   --surface: #ffffff;
-  --surface-2: #f1faf4;
-  --text: #0e1a0e;
-  --text-soft: #5a6e5a;
-  --border: rgba(14, 26, 14, 0.1);
-  --shadow: 0 30px 60px -30px rgba(8, 60, 30, 0.35);
-  --hero-glow: rgba(0, 161, 82, 0.25);
-  /* glassmorphism tokens — mirror the app's GlassCard fills */
-  --glass: rgba(255, 255, 255, 0.55);
-  --glass-strong: rgba(255, 255, 255, 0.72);
-  --glass-border: rgba(255, 255, 255, 0.75);
-  --field: rgba(255, 255, 255, 0.92);
-  --field-border: rgba(0, 100, 0, 0.1);
-  --app-brand: #006400; /* DeepGreen in light, like the app */
+  --surface-2: #f3faf5;
+  --text: #15251c;
+  --text-soft: #66736a;
+  --border: rgba(21, 37, 28, 0.1);
+  --shadow: 0 24px 60px -32px rgba(16, 39, 28, 0.28);
+  --hero-glow: rgba(15, 157, 85, 0.18);
+  /* soft surface fills (restrained, premium) */
+  --glass: rgba(255, 255, 255, 0.72);
+  --glass-strong: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(21, 37, 28, 0.08);
+  --field: #ffffff;
+  --field-border: rgba(15, 157, 85, 0.16);
+  --app-brand: #0b7a42;
   color-scheme: light;
 }
 
 /* ---- Dark theme tokens ---- */
 .theme-dark {
-  --bg: #0a1f12;
-  --bg-2: #0d0d0d;
-  --bg-3: #12281a;
-  --surface: #15201a;
-  --surface-2: #1b2a21;
-  --text: #eaf3ea;
-  --text-soft: #a9c2a9;
-  --border: rgba(234, 243, 234, 0.12);
-  --shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.7);
-  --hero-glow: rgba(74, 232, 136, 0.22);
-  --glass: rgba(255, 255, 255, 0.07);
-  --glass-strong: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.14);
-  --field: rgba(255, 255, 255, 0.06);
+  /* Refined forest-green dark theme. */
+  --bg: #0b1f16;
+  --bg-2: #0a1a12;
+  --bg-3: #10271c;
+  --surface: #13241b;
+  --surface-2: #19301f;
+  --text: #e9f3ed;
+  --text-soft: #a7bfb2;
+  --border: rgba(233, 243, 237, 0.12);
+  --shadow: 0 30px 70px -34px rgba(0, 0, 0, 0.72);
+  --hero-glow: rgba(34, 197, 138, 0.2);
+  --glass: rgba(255, 255, 255, 0.05);
+  --glass-strong: rgba(255, 255, 255, 0.09);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --field: rgba(255, 255, 255, 0.05);
   --field-border: rgba(255, 255, 255, 0.1);
-  --app-brand: #6fe7a8; /* Mint in dark, like the app */
+  --app-brand: #22c58a;
   color-scheme: dark;
 }
 
@@ -2448,4 +2450,235 @@ a {
 }
 @media (prefers-reduced-motion: reduce) {
   .lightbox-overlay { animation: none; }
+}
+
+/* ============================================================= *
+ * Premium polish additions: hero web-card + scrolling demo walk *
+ * ============================================================= */
+
+/* shared availability labels */
+.is-ok { color: var(--brand-deep); font-style: normal; font-weight: 600; }
+.is-low { color: #b8791a; font-style: normal; font-weight: 600; }
+
+/* ---- Hero web-native search card (replaces phone mockups) ---- */
+.webcard {
+  position: relative;
+  z-index: 1;
+  width: min(440px, 100%);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.webcard__chrome {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+}
+.webcard__dots { display: flex; gap: 6px; }
+.webcard__dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
+.webcard__dots i:nth-child(1) { background: #f0b9b3; }
+.webcard__dots i:nth-child(2) { background: #f1dcab; }
+.webcard__dots i:nth-child(3) { background: #b8e2c6; }
+.webcard__url {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-soft);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 12px;
+}
+.webcard__url svg { color: var(--brand); }
+.webcard__body { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+.webcard__loc { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.webcard__loc svg { color: var(--brand); }
+.webcard__loc small { display: block; color: var(--text-soft); font-size: 11px; }
+.webcard__field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--field-border);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  font-weight: 600;
+  background: var(--field);
+}
+.webcard__field svg { color: var(--text-soft); }
+.webcard__list { display: flex; flex-direction: column; gap: 8px; }
+.webcard__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+}
+.webcard__ic,
+.prev__ic {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--brand) 12%, transparent);
+  color: var(--brand-deep);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.webcard__info { flex: 1; min-width: 0; }
+.webcard__info b { font-size: 14px; }
+.webcard__info small { display: block; color: var(--text-soft); font-size: 12px; }
+.webcard__price { font-weight: 800; }
+.webcard__tag {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #b8791a;
+  background: rgba(184, 121, 26, 0.1);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+/* ---- Scrolling demo walkthrough ---- */
+.walk {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.walk__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 44px;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 36px;
+  box-shadow: var(--shadow);
+}
+.walk__text { order: 1; }
+.walk__media { order: 2; }
+.walk__row:nth-child(even) .walk__text { order: 2; }
+.walk__row:nth-child(even) .walk__media { order: 1; }
+.walk__n {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  color: var(--brand-deep);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+}
+.walk__text h3 {
+  font-size: clamp(22px, 2.4vw, 30px);
+  margin: 12px 0 10px;
+  letter-spacing: -0.02em;
+}
+.walk__text p { color: var(--text-soft); font-size: 16px; max-width: 42ch; }
+
+/* preview cards inside the walkthrough */
+.prev {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.prev__field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--field-border);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  font-weight: 600;
+}
+.prev__field svg { color: var(--text-soft); }
+.prev__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 10px 12px;
+}
+.prev__info { flex: 1; min-width: 0; }
+.prev__info b { font-size: 14px; }
+.prev__info small { display: block; color: var(--text-soft); font-size: 12px; }
+.prev__price { font-weight: 800; }
+.prev__tick {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  border: 2px solid var(--border);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+.prev__tick.is-done { background: var(--brand); border-color: var(--brand); }
+.prev__pill { color: var(--brand-deep); }
+.prev__bubble {
+  max-width: 88%;
+  padding: 11px 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.prev__bubble--ai {
+  align-self: flex-start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+}
+.prev__bubble--me {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--accent), var(--brand));
+  color: #042b16;
+  border-bottom-right-radius: 4px;
+}
+.prev__src { display: block; margin-top: 6px; font-size: 11px; color: var(--text-soft); }
+.prev__timeline { display: flex; flex-direction: column; gap: 14px; padding: 4px; }
+.prev__tstep { display: flex; align-items: center; gap: 12px; }
+.prev__tdot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+}
+.prev__tstep.is-done .prev__tdot { background: var(--brand); border-color: var(--brand); }
+.prev__tstep b { font-size: 14px; }
+.prev__tstep:not(.is-done) b { color: var(--text-soft); }
+
+.demo__cta { display: flex; justify-content: center; margin-top: 40px; }
+
+@media (max-width: 820px) {
+  .walk__row {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px;
+  }
+  .walk__row .walk__text,
+  .walk__row:nth-child(even) .walk__text { order: 1; }
+  .walk__row .walk__media,
+  .walk__row:nth-child(even) .walk__media { order: 2; }
 }
