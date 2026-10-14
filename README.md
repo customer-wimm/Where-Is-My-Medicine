@@ -49,23 +49,19 @@ dashboard) and run `uvicorn main:app --host 0.0.0.0 --port $PORT`.
 
 ## The APK
 
-The app is hosted on **GitHub Releases**, not in this repo. The backend
-(`/api/download`) 302-redirects to `WIMM_APK_URL`, which points at the permanent
-"latest" asset link:
-
-```
-https://github.com/customer-wimm/Where-Is-My-Medicine/releases/latest/download/wimm.apk
-```
+The app is hosted on **Firebase Storage**, not in this repo. The backend
+(`/api/download`) 302-redirects to `WIMM_APK_URL`, a direct-download URL for the
+APK. Set that env var on Render (see `render.yaml` for the current value).
 
 To ship a new build:
 
-1. Rename the APK to exactly **`wimm.apk`** (lowercase, no spaces).
-2. Draft a new release with a fresh tag (`v2.0`, `v2.1`, …) and attach `wimm.apk`.
-3. Publish it. The `latest/download/wimm.apk` link auto-resolves to the newest
-   release, so `WIMM_APK_URL` never needs to change.
+1. Upload the new APK to Firebase Storage (Console → Storage → Upload file).
+2. Copy its **download URL** (the `…?alt=media&token=…` link).
+3. Update `WIMM_APK_URL` on Render (and in `render.yaml`) to the new URL.
 4. Bump `WIMM_APK_VERSION` if you want the version label updated.
 
-The repo must stay **public** for this link to be downloadable without auth.
+The Firebase object must stay publicly downloadable (its download token must
+remain valid) for the link to work without auth.
 
 ## Where to customise
 

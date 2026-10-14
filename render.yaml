@@ -9,11 +9,10 @@ services:
     dockerContext: .
     healthCheckPath: /api/health
     envVars:
-      # Permanent "latest" link to the APK hosted on GitHub Releases.
-      # Every release must attach an APK asset named exactly "wimm.apk" so this
-      # URL always resolves to the newest build — no edits needed per version.
+      # Direct-download URL for the APK, hosted on Firebase Storage.
+      # To ship a new version, upload it to Firebase and update this URL.
       - key: WIMM_APK_URL
-        value: "https://github.com/customer-wimm/Where-Is-My-Medicine/releases/latest/download/wimm.apk"
+        value: "https://firebasestorage.googleapis.com/v0/b/where-is-my-medicine-3aaaa.firebasestorage.app/o/application-for-website%2Fwimm.apk?alt=media&token=2814858f-0277-485c-9eb5-76db726a2193"
       - key: WIMM_APK_VERSION
         value: "2.0"
       # URL of the Admin/Super-Admin API (the wimm-admin-api service from the

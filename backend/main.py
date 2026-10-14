@@ -10,11 +10,10 @@ A small FastAPI app that:
 Run dev:  uvicorn main:app --reload --port 8000
 
 APK hosting:
-  Set WIMM_APK_URL to the GitHub Release asset URL. Use the permanent "latest"
-  link so the site never needs updating when a new version ships — just publish
-  a new release whose APK asset is named exactly "wimm.apk":
-  https://github.com/customer-wimm/Where-Is-My-Medicine/releases/latest/download/wimm.apk
-  The browser is redirected there directly so GitHub handles auth and delivery.
+  Set WIMM_APK_URL to a direct-download URL for the APK. The app is hosted on
+  Firebase Storage; the browser is redirected straight to it, so the host
+  handles delivery. To ship a new version, upload the new APK to Firebase and
+  update WIMM_APK_URL (on Render) to its download URL.
 """
 
 from __future__ import annotations
@@ -39,12 +38,11 @@ LEADS_FILE = DATA_DIR / "leads.json"
 
 APP_NAME = "WHERE IS MY MEDICINE"
 APK_VERSION = os.environ.get("WIMM_APK_VERSION", "2.0")
-# GitHub Release asset URL — set this env var on Render.
-# Permanent "latest" link: every release must attach an APK asset named exactly
-# "wimm.apk" so this URL always resolves to the newest build without changes here.
+# Direct-download URL for the APK (Firebase Storage) — set this env var on Render.
+# To ship a new version, upload it to Firebase and point WIMM_APK_URL at the new URL.
 APK_URL = os.environ.get(
     "WIMM_APK_URL",
-    "https://github.com/customer-wimm/Where-Is-My-Medicine/releases/latest/download/wimm.apk",
+    "https://firebasestorage.googleapis.com/v0/b/where-is-my-medicine-3aaaa.firebasestorage.app/o/application-for-website%2Fwimm.apk?alt=media&token=2814858f-0277-485c-9eb5-76db726a2193",
 )
 
 app = FastAPI(title=f"{APP_NAME} — Website API", version="1.0.0")
