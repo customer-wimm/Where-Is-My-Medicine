@@ -65,10 +65,10 @@ export function Footer() {
 
         <nav className="footer__col" aria-label="Legal">
           <h4 className="footer__col-title">Legal</h4>
-          <a href="/privacy/" target="_blank" rel="noopener noreferrer">
+          <a href="/privacy/">
             Privacy Policy
           </a>
-          <a href="/terms/" target="_blank" rel="noopener noreferrer">
+          <a href="/terms/">
             Terms of Service
           </a>
         </nav>
@@ -103,11 +103,11 @@ export function Footer() {
       <div className="footer__bottom">
         <span>Made with ❤️ WHERE IS MY MEDICINE © {year}</span>
         <span className="footer__legal-links">
-          <a href="/privacy/" target="_blank" rel="noopener noreferrer">
+          <a href="/privacy/">
             Privacy
           </a>
           <span className="footer__dot">•</span>
-          <a href="/terms/" target="_blank" rel="noopener noreferrer">
+          <a href="/terms/">
             Terms
           </a>
         </span>
