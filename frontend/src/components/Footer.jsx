@@ -75,8 +75,8 @@ export function Footer() {
 
         <div className="footer__col">
           <h4 className="footer__col-title">Get in touch</h4>
-          <a href="mailto:connect@whereismymedicine.com" className="footer__email">
-            connect@whereismymedicine
+          <a href="mailto:care@whereismymedicine.com" className="footer__email">
+            care@whereismymedicine
             <span className="footer__email-tld">.com</span>
           </a>
           <p className="footer__reply">We usually reply within a day.</p>
