@@ -110,6 +110,10 @@ export function Footer() {
           <a href="/terms/">
             Terms
           </a>
+          <span className="footer__dot">•</span>
+          <a href="/delete-account/">
+            Delete account
+          </a>
         </span>
       </div>
     </footer>

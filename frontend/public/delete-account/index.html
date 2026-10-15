@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Request Account Deletion — Where Is My Medicine</title>
+  <meta name="description" content="Request deletion of your Where Is My Medicine (WIMM) account and associated data." />
+  <link rel="icon" href="/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand: #0f9d55;
+      --brand-deep: #0b7a42;
+      --bg: #ffffff;
+      --surface: #ffffff;
+      --surface-2: #f3faf5;
+      --text: #15251c;
+      --text-soft: #66736a;
+      --border: rgba(21, 37, 28, 0.12);
+      --shadow: 0 24px 60px -32px rgba(16, 39, 28, 0.28);
+      color-scheme: light;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1f16;
+        --surface: #13241b;
+        --surface-2: #19301f;
+        --text: #e9f3ed;
+        --text-soft: #a7bfb2;
+        --border: rgba(233, 243, 237, 0.14);
+        --shadow: 0 30px 70px -34px rgba(0, 0, 0, 0.72);
+        color-scheme: dark;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap { max-width: 640px; margin: 0 auto; padding: 24px 16px 80px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 8px 0 28px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-weight: 700; }
+    .brand img { width: 34px; height: 34px; border-radius: 9px; }
+    .brand b { color: var(--brand-deep); }
+    .back { font-size: 14px; font-weight: 600; color: var(--brand); text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 36px 32px;
+    }
+    h1 { font-size: clamp(26px, 5vw, 34px); font-weight: 800; letter-spacing: -0.015em; margin: 0 0 6px; }
+    .intro { font-size: 16px; color: var(--text-soft); margin: 0 0 26px; }
+    label { display: block; font-size: 14px; font-weight: 600; margin: 0 0 6px; }
+    .field { margin: 0 0 18px; }
+    input, textarea, select {
+      width: 100%;
+      font: inherit;
+      color: var(--text);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      outline: none;
+    }
+    input:focus, textarea:focus, select:focus { border-color: var(--brand); box-shadow: 0 0 0 4px rgba(15, 157, 85, 0.12); }
+    textarea { min-height: 96px; resize: vertical; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 100%;
+      font: inherit; font-weight: 700;
+      color: #fff; background: var(--brand);
+      border: none; border-radius: 999px;
+      padding: 14px 20px; cursor: pointer;
+      box-shadow: 0 10px 24px -8px var(--brand);
+      transition: background .15s ease, transform .1s ease;
+    }
+    .btn:hover { background: var(--brand-deep); }
+    .btn:active { transform: translateY(1px); }
+    .hint { margin: 16px 0 0; font-size: 13px; color: var(--text-soft); }
+    .hint a { color: var(--brand); font-weight: 600; }
+    .done {
+      display: none;
+      margin-top: 18px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      font-size: 15px;
+    }
+    .done b { color: var(--brand-deep); }
+    footer { text-align: center; margin-top: 32px; font-size: 13px; color: var(--text-soft); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <a class="brand" href="/">
+        <img src="/logo.png" alt="" width="34" height="34" />
+        <span>WHERE IS MY <b>MEDICINE</b></span>
+      </a>
+      <a class="back" href="/">&larr; Back to site</a>
+    </div>
+
+    <main class="card">
+      <h1>Request account deletion</h1>
+      <p class="intro">
+        Use this form to request deletion of your Where Is My Medicine account and
+        the personal data associated with it. We'll verify the request against your
+        registered details before any data is removed.
+      </p>
+
+      <form id="form" novalidate>
+        <div class="field">
+          <label for="name">Full name</label>
+          <input id="name" name="name" type="text" autocomplete="name" placeholder="Your name" required />
+        </div>
+        <div class="field">
+          <label for="contact">Registered email or phone</label>
+          <input id="contact" name="contact" type="text" autocomplete="email" placeholder="The email or phone on your account" required />
+        </div>
+        <div class="field">
+          <label for="reason">Reason (optional)</label>
+          <textarea id="reason" name="reason" placeholder="Tell us why you're leaving (optional)"></textarea>
+        </div>
+        <button class="btn" type="submit">Request account deletion</button>
+      </form>
+
+      <div class="done" id="done">
+        <p><b>Thanks — your request has been noted.</b></p>
+        <p style="margin-top:8px;color:var(--text-soft)">
+          Account deletion isn't processed automatically yet. To make sure we can
+          verify and action your request, please also email us from your registered
+          address at <a href="mailto:care@whereismymedicine.com?subject=Account%20deletion%20request">care@whereismymedicine.com</a>.
+        </p>
+      </div>
+
+      <p class="hint">
+        Prefer email? Write to <a href="mailto:care@whereismymedicine.com?subject=Account%20deletion%20request">care@whereismymedicine.com</a>
+        from the address on your account.
+      </p>
+    </main>
+
+    <footer>&copy; <span id="y"></span> WHERE IS MY MEDICINE</footer>
+  </div>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+    // No backend yet — this is a placeholder page. Submitting just confirms
+    // on-screen and points the user to email; nothing is sent anywhere.
+    var form = document.getElementById("form");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+      form.style.display = "none";
+      document.getElementById("done").style.display = "block";
+    });
+  </script>
+</body>
+</html>
